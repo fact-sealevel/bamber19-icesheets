@@ -63,6 +63,8 @@ def bamber19_postprocess_icesheets(locationfilename, chunksize, pipeline_id):
 	waisfp = da.array(AssignFP(os.path.join(fpdir,"fprint_wais.nc"), site_lats, site_lons))
 	eaisfp = da.array(AssignFP(os.path.join(fpdir,"fprint_eais.nc"), site_lats, site_lons))
 
+	print('gisfp shape: ', gisfp.shape)
+	print('gis samps shape: ', gis_samps.shape)
 	# Rechunk the fingerprints for memory
 	gisfp = gisfp.rechunk(chunksize)
 	waisfp = waisfp.rechunk(chunksize)

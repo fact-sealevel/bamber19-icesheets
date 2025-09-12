@@ -21,6 +21,7 @@ def bamber19_preprocess_icesheets(pyear_start, pyear_end, pyear_step, baseyear, 
 	targyears = np.arange(pyear_start, pyear_end+1, pyear_step)
 
 	# Load the data
+	#this path sould be an arg passed by click instead of hardcoded in this script. 
 	filename = os.path.join(os.path.dirname(__file__), "SLRProjections190726core_SEJ_full.mat")
 	mat = scipy.io.loadmat(filename)
 	
