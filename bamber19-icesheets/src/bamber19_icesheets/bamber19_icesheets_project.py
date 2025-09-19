@@ -21,10 +21,58 @@ Output:
 
 """
 
+def make_projection_ds(ice_source, 
+                       global_samps,
+                       years,
+                       samples,
+                       locations, 
+                       pipeline_id,
+                       scenario,
+                       baseyear):
+    data = np.asarray(global_samps, dtype=np.float32)[:, :, np.newaxis]
+
+    ds = xr.Dataset(
+        data_vars={
+            # data variable
+            "sea_level_change": (
+                ("samples", "years", "locations"),
+                data,
+                {"units": "mm"},
+            ),
+            # plain variables over 'locations' (not coords, to match your layout)
+            "lat": (
+                ("locations",),
+                np.array([np.float32(np.inf)], dtype=np.float32),
+            ),
+            "lon": (
+                ("locations",),
+                np.array([np.float32(np.inf)], dtype=np.float32),
+            ),
+        },
+        coords={
+            # coordinate variables with same names as dims
+            "years": (("years",), years),
+            "samples": (("samples",), samples),
+            "locations": (("locations",), locations),
+        },
+        attrs={
+            "description": f"Global SLR contribution from {ice_source} from the Bamber et al. 2019 IPCC AR6 workflow",
+            "history": "Created " + time.ctime(time.time()),
+            "source": f"FACTS: {pipeline_id}",
+            "scenario": scenario,
+            "baseyear": baseyear,
+        },
+    )
+    return ds
+
 
 def bamber19_project_icesheets(
-    nsamps, pipeline_id, replace, rngseed, 
-    preprocess_output
+    nsamps, 
+    pipeline_id, 
+    replace, 
+    rngseed, 
+    preprocess_output,
+    output_path:str
 ):
     """This is called if a climate data file is NOT provided."""
 
@@ -57,6 +105,73 @@ def bamber19_project_icesheets(
         "scenario": scenario,  # 'temperature-driven', BUG? See above comment.
         "baseyear": baseyear,
     }
+
+    # Adding this to mimic what happens in temperature-driven situation. 
+    # This is writing the global slr projections (w/o fingerprints) generated
+    # When no climate data file is provided.
+    years = np.asarray(years, dtype=np.int32)
+    samples = np.arange(nsamps, dtype=np.int64)
+    locations = np.array([-1], dtype=np.int64)  # single “location”, value -1
+
+    ds_eais = make_projection_ds(ice_source="EAIS", 
+                                 global_samps=eais_samps, 
+                                 years=years,
+                                 samples=samples,
+                                 locations=locations,
+                                 pipeline_id=pipeline_id,
+                                 scenario=scenario,
+                                 baseyear=baseyear)
+    
+    ds_wais = make_projection_ds(ice_source="WAIS", 
+                                 global_samps=wais_samps,
+                                 years=years,
+                                 samples=samples,
+                                 locations=locations,
+                                 pipeline_id=pipeline_id,
+                                 scenario=scenario,
+                                 baseyear=baseyear)
+    
+    ds_ais = make_projection_ds(ice_source="AIS", 
+                                global_samps=ais_samps,
+                                years=years,
+                                samples=samples,
+                                locations=locations,
+                                pipeline_id=pipeline_id,
+                                scenario=scenario,
+                                baseyear=baseyear)
+    
+    ds_gis = make_projection_ds(ice_source="GIS", 
+                                global_samps=gis_samps,
+                                years=years,
+                                samples=samples,
+                                locations=locations,
+                                pipeline_id=pipeline_id,
+                                scenario=scenario,
+                                baseyear=baseyear)
+
+    gis_nc_global_outpath = os.path.join(
+        output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "GIS")
+        )
+    print('Writing GIS global SLR to: ', gis_nc_global_outpath) 
+    ds_gis.to_netcdf(gis_nc_global_outpath)
+
+    wais_nc_global_outpath = os.path.join(
+        output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "WAIS")
+        )
+    print('Writing WAIS global SLR to: ', wais_nc_global_outpath)
+    ds_wais.to_netcdf(wais_nc_global_outpath)
+    
+    eais_nc_global_outpath = os.path.join(
+        output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "EAIS")
+        )
+    print('Writing EAIS global SLR to: ', eais_nc_global_outpath)
+    ds_eais.to_netcdf(eais_nc_global_outpath)
+    
+    ais_nc_global_outpath = os.path.join(
+        output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "AIS")
+        )
+    print('Writing AIS global SLR to: ', ais_nc_global_outpath)
+    ds_ais.to_netcdf(ais_nc_global_outpath)
     return icesheets_output
 
 

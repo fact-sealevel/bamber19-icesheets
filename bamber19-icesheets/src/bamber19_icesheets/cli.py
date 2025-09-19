@@ -35,7 +35,7 @@ def resolve_path(base: Path, value:str | Path | None) -> Path | None:
 @click.option(
     "--pipeline-id",
     #envvar="BAMBER19_ICESHEETS_PREPROCESS_PIPELINE_ID",
-    help="Unique identifier for this instance of the module.",
+    help="Unique identifier for this instance of the module. Used to name output files.",
     required=True,
 )
 @click.option(
@@ -43,7 +43,7 @@ def resolve_path(base: Path, value:str | Path | None) -> Path | None:
     #envvar="BAMBER19_ICESHEETS_PREPROCESS_PYEAR_START",
     help="Projection year start [default=2020]",
     default=2020,
-    type=click.IntRange(min=2000),
+    type=click.IntRange(min=2020), 
 )
 @click.option(
     "--pyear-end",
@@ -64,13 +64,14 @@ def resolve_path(base: Path, value:str | Path | None) -> Path | None:
     # envvar="BAMBER19_ICESHEETS_PREPROCESS_BASEYEAR",
     help="Year to which projections are referenced [default = 2000]",
     default=2000,
-    type=click.IntRange(2000, 2010),
+    #type=click.IntRange(2000, 2010), <- NOTE I'm not sure where this range came from?
 )
 @click.option(
     "--scenario",
     # envvar = "BAMBER19_ICESHEETS_PREPROCESS_SCENARIO",
-    help="Emissions scenario of interest [default=rcp85]",
-    default="rcp85",
+    help="Emissions scenario of interest [default=ssp585]",
+    default="ssp585", 
+    #NOTE, this is rcp85 in orig. module, updating to ssp585 per discussion in stcaf/tlm-sterodynamics issue #7
 )
 @click.option(
     "--climate-data-file",
@@ -93,6 +94,7 @@ def resolve_path(base: Path, value:str | Path | None) -> Path | None:
         "tlim2.0win0.25": "corefileL",
         "tlim5.0win0.25": "corefileH",
     },
+    type=dict
 )
 @click.option(
     "--nsamps",
@@ -201,7 +203,8 @@ def main(
             pipeline_id=pipeline_id,
             replace=replace,
             rngseed=rngseed,
-            preprocess_output=preprocess_output
+            preprocess_output=preprocess_output,
+            output_path=output_path,
         )
     else:
         project_output  = (

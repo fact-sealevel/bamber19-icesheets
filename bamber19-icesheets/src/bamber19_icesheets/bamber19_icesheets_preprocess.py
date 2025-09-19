@@ -33,10 +33,10 @@ def bamber19_preprocess_icesheets(pyear_start,
     if climate_data_file is not None:
         # If a climate data file is provided, extract both high and low scenario samples
         wais_sampsH, eais_sampsH, gis_sampsH = ExtractSamples(
-            mat, "corefileH", targyears, baseyear
+            mat=mat, this_corefile="corefileH", targyears=targyears, baseyear=baseyear
         )
         wais_sampsL, eais_sampsL, gis_sampsL = ExtractSamples(
-            mat, "corefileL", targyears, baseyear
+            mat=mat, this_corefile="corefileL", targyears=targyears, baseyear=baseyear
         )
 
         # Combine EAIS and WAIS samples for total AIS
@@ -62,6 +62,10 @@ def bamber19_preprocess_icesheets(pyear_start,
 
     # If no climate data file provided
     else:
+
+        this_corefile = scenario_map[scenario] 
+        wais_samps, eais_samps, gis_samps = ExtractSamples(mat=mat, this_corefile=this_corefile, targyears=targyears, baseyear=baseyear)
+        ais_samps = eais_samps + wais_samps
         out_data_scene = {
             "eais_samps": eais_samps,
             "wais_samps": wais_samps,
