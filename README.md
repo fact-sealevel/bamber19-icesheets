@@ -22,11 +22,17 @@ echo "New_York	12	40.70	-74.01" > ./data/input/location.lst
 mkdir -p ./data/output
 ```
 Now, run the CLI app:
+(note, haven't setup docker yet so this is a stand-in):
+- replace the abs paths with machine-specific paths to the specified files.
+To run without cloning & creating project on local machine:
+```shell
+ uvx --from git+https://github.com/e-marshall/bamber19-icesheets.git@package bamber19-icesheets --pipeline-id 'testtest123' --climate-data-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc --scenario 'ssp585' --slr-proj-mat-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/SLRProjections190726core_SEJ_full.mat --location-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/location.lst --fingerprint-dir $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/grd_fingerprints_data/FPRINT --output-path $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/output
+```
 
+If project is cloned on machine:
 ```shell 
 uv run bamber19-icesheets --pipeline-id testest --climate-data-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc --scenario 'ssp585' --slr-proj-mat-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/SLRProjections190726core_SEJ_full.mat --location-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/location.lst --fingerprint-dir $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/grd_fingerprints_data/FPRINT --output-path $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/output
 ```
-NOTE: when running locally, need to give abs paths, will work shorter paths with docker once set up. TODO
 
 ## Features
 Several options and configurations are available when running the container. 
@@ -77,8 +83,13 @@ uv run bamber19-icesheets --help
 If this module runs successfully, output projections will appear in `./data/output`. For each ice sheet (EAIS, WAIS, AIS, GIS), two netCDF files are written: one of projections of ice sheet contribution to global sea-level change and one of sampled projections of ice sheet contribution to local sea-level change. 
 
 ## Run locally
+Once the data download step in the example section has been completed, this program can be run locally without downloading the repo by running the following: ***NOTE** replace file paths.*
+```
+ uvx --from git+https://github.com/e-marshall/bamber19-icesheets.git@package bamber19-icesheets --pipeline-id 'testtest123' --climate-data-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc --scenario 'ssp585' --slr-proj-mat-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/SLRProjections190726core_SEJ_full.mat --location-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/location.lst --fingerprint-dir $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/grd_fingerprints_data/FPRINT --output-path $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/output
+ ```
 
 ## Notes
+(these probably belong elsewhere but have them here for now)
 - All input arguments in the [original module](https://github.com/stcaf-org/bamber19-icesheets/tree/main/modules/bamber19/icesheets) are defined in `cli.py` and passed to `main()`. 
 
 - Where necessary, new arguments are created to replace hard-coded paths and other variables in the original. 
