@@ -8,7 +8,6 @@ from bamber19_icesheets.read_locationfile import ReadLocationFile
 from bamber19_icesheets.AssignFP import AssignFP
 
 
-
 def bamber19_postprocess_icesheets(
     projection_dict: dict,
     location_fpath: str,  # (need to pass full path) was: locationfilename,
@@ -17,7 +16,6 @@ def bamber19_postprocess_icesheets(
     pipeline_id: str,
     output_path: str,
 ) -> None:
-    
     """
     Postprocess global ice sheet projections to generate local sea level rise (SLR) at specified locations.
 

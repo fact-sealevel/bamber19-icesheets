@@ -180,4 +180,8 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
+# VSCode stuff
+.vscode/
+.history
+
 data/

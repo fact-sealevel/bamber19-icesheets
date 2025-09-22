@@ -5,14 +5,17 @@ import pickle as p
 import numpy as np
 import scipy.io
 
-def bamber19_preprocess_icesheets(pyear_start, 
-                                  pyear_end, 
-                                  pyear_step, 
-                                  baseyear, 
-                                  scenario, 
-                                  slr_proj_mat_fpath:str,
-                                  scenario_map:dict,
-                                  climate_data_file:str) -> dict:
+
+def bamber19_preprocess_icesheets(
+    pyear_start,
+    pyear_end,
+    pyear_step,
+    baseyear,
+    scenario,
+    slr_proj_mat_fpath: str,
+    scenario_map: dict,
+    climate_data_file: str,
+) -> dict:
     """
     Preprocess Bamber et al. 2019 ice sheet projections for the IPCC AR6 workflow.
 
@@ -87,9 +90,10 @@ def bamber19_preprocess_icesheets(pyear_start,
 
     # If no climate data file provided
     else:
-
-        this_corefile = scenario_map[scenario] 
-        wais_samps, eais_samps, gis_samps = ExtractSamples(mat=mat, this_corefile=this_corefile, targyears=targyears, baseyear=baseyear)
+        this_corefile = scenario_map[scenario]
+        wais_samps, eais_samps, gis_samps = ExtractSamples(
+            mat=mat, this_corefile=this_corefile, targyears=targyears, baseyear=baseyear
+        )
         ais_samps = eais_samps + wais_samps
         out_data_scene = {
             "eais_samps": eais_samps,

@@ -21,14 +21,10 @@ Output:
 
 """
 
-def make_projection_ds(ice_source, 
-                       global_samps,
-                       years,
-                       samples,
-                       locations, 
-                       pipeline_id,
-                       scenario,
-                       baseyear):
+
+def make_projection_ds(
+    ice_source, global_samps, years, samples, locations, pipeline_id, scenario, baseyear
+):
     """
     Create an xarray Dataset for global sea level rise projections from ice sheet samples.
 
@@ -99,12 +95,7 @@ def make_projection_ds(ice_source,
 
 
 def bamber19_project_icesheets(
-    nsamps, 
-    pipeline_id, 
-    replace, 
-    rngseed, 
-    preprocess_output,
-    output_path:str
+    nsamps, pipeline_id, replace, rngseed, preprocess_output, output_path: str
 ):
     """
     Generate and save global sea level rise projections for ice sheets (if no climate data file is passed).
@@ -169,78 +160,90 @@ def bamber19_project_icesheets(
         "baseyear": baseyear,
     }
 
-    # Adding this to mimic what happens in temperature-driven situation. 
+    # Adding this to mimic what happens in temperature-driven situation.
     # This is writing the global slr projections (w/o fingerprints) generated
     # When no climate data file is provided.
     years = np.asarray(years, dtype=np.int32)
     samples = np.arange(nsamps, dtype=np.int64)
     locations = np.array([-1], dtype=np.int64)  # single “location”, value -1
 
-    ds_eais = make_projection_ds(ice_source="EAIS", 
-                                 global_samps=eais_samps, 
-                                 years=years,
-                                 samples=samples,
-                                 locations=locations,
-                                 pipeline_id=pipeline_id,
-                                 scenario=scenario,
-                                 baseyear=baseyear)
-    
-    ds_wais = make_projection_ds(ice_source="WAIS", 
-                                 global_samps=wais_samps,
-                                 years=years,
-                                 samples=samples,
-                                 locations=locations,
-                                 pipeline_id=pipeline_id,
-                                 scenario=scenario,
-                                 baseyear=baseyear)
-    
-    ds_ais = make_projection_ds(ice_source="AIS", 
-                                global_samps=ais_samps,
-                                years=years,
-                                samples=samples,
-                                locations=locations,
-                                pipeline_id=pipeline_id,
-                                scenario=scenario,
-                                baseyear=baseyear)
-    
-    ds_gis = make_projection_ds(ice_source="GIS", 
-                                global_samps=gis_samps,
-                                years=years,
-                                samples=samples,
-                                locations=locations,
-                                pipeline_id=pipeline_id,
-                                scenario=scenario,
-                                baseyear=baseyear)
+    ds_eais = make_projection_ds(
+        ice_source="EAIS",
+        global_samps=eais_samps,
+        years=years,
+        samples=samples,
+        locations=locations,
+        pipeline_id=pipeline_id,
+        scenario=scenario,
+        baseyear=baseyear,
+    )
+
+    ds_wais = make_projection_ds(
+        ice_source="WAIS",
+        global_samps=wais_samps,
+        years=years,
+        samples=samples,
+        locations=locations,
+        pipeline_id=pipeline_id,
+        scenario=scenario,
+        baseyear=baseyear,
+    )
+
+    ds_ais = make_projection_ds(
+        ice_source="AIS",
+        global_samps=ais_samps,
+        years=years,
+        samples=samples,
+        locations=locations,
+        pipeline_id=pipeline_id,
+        scenario=scenario,
+        baseyear=baseyear,
+    )
+
+    ds_gis = make_projection_ds(
+        ice_source="GIS",
+        global_samps=gis_samps,
+        years=years,
+        samples=samples,
+        locations=locations,
+        pipeline_id=pipeline_id,
+        scenario=scenario,
+        baseyear=baseyear,
+    )
 
     gis_nc_global_outpath = os.path.join(
         output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "GIS")
-        )
-    print('Writing GIS global SLR to: ', gis_nc_global_outpath) 
+    )
+    print("Writing GIS global SLR to: ", gis_nc_global_outpath)
     ds_gis.to_netcdf(gis_nc_global_outpath)
 
     wais_nc_global_outpath = os.path.join(
         output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "WAIS")
-        )
-    print('Writing WAIS global SLR to: ', wais_nc_global_outpath)
+    )
+    print("Writing WAIS global SLR to: ", wais_nc_global_outpath)
     ds_wais.to_netcdf(wais_nc_global_outpath)
-    
+
     eais_nc_global_outpath = os.path.join(
         output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "EAIS")
-        )
-    print('Writing EAIS global SLR to: ', eais_nc_global_outpath)
+    )
+    print("Writing EAIS global SLR to: ", eais_nc_global_outpath)
     ds_eais.to_netcdf(eais_nc_global_outpath)
-    
+
     ais_nc_global_outpath = os.path.join(
         output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "AIS")
-        )
-    print('Writing AIS global SLR to: ', ais_nc_global_outpath)
+    )
+    print("Writing AIS global SLR to: ", ais_nc_global_outpath)
     ds_ais.to_netcdf(ais_nc_global_outpath)
     return icesheets_output
 
 
 def bamber19_project_icesheets_temperaturedriven(
-    climate_data_file, pipeline_id, replace, rngseed, 
-    preprocess_output: dict, output_path:str
+    climate_data_file,
+    pipeline_id,
+    replace,
+    rngseed,
+    preprocess_output: dict,
+    output_path: str,
 ):
     """
     Generate and save global sea level rise projections for ice sheets (temperature-driven).
@@ -277,7 +280,7 @@ def bamber19_project_icesheets_temperaturedriven(
     - NetCDF files for each ice sheet component (AIS, EAIS, WAIS, GIS) are written to `output_path`.
     - The function determines which samples to draw from high or low scenario using the provided climate data.
     - The function assumes the preprocessed output dictionary contains the required keys and arrays.
-"""
+    """
 
     years = preprocess_output["targyears"]
     scenario = preprocess_output["scenario"]
@@ -329,44 +332,51 @@ def bamber19_project_icesheets_temperaturedriven(
     locations = np.array([-1], dtype=np.int64)  # single “location”, value -1
 
     # data: (samples, years, locations)
-    
-    ds_eais = make_projection_ds("EAIS", eais_samps, years, samples, locations, pipeline_id, scenario, baseyear)
-    ds_wais = make_projection_ds("WAIS", wais_samps, years, samples, locations, pipeline_id, scenario, baseyear)
-    ds_ais = make_projection_ds("AIS", ais_samps, years, samples, locations, pipeline_id, scenario, baseyear)
-    ds_gis = make_projection_ds("GIS", gis_samps, years, samples, locations, pipeline_id, scenario, baseyear)
+
+    ds_eais = make_projection_ds(
+        "EAIS", eais_samps, years, samples, locations, pipeline_id, scenario, baseyear
+    )
+    ds_wais = make_projection_ds(
+        "WAIS", wais_samps, years, samples, locations, pipeline_id, scenario, baseyear
+    )
+    ds_ais = make_projection_ds(
+        "AIS", ais_samps, years, samples, locations, pipeline_id, scenario, baseyear
+    )
+    ds_gis = make_projection_ds(
+        "GIS", gis_samps, years, samples, locations, pipeline_id, scenario, baseyear
+    )
 
     gis_nc_global_outpath = os.path.join(
         output_path, "{0}_{1}_globalsl.nc".format(pipeline_id, "GIS")
-        )
-    print('Writing GIS global SLR to: ', gis_nc_global_outpath) 
+    )
+    print("Writing GIS global SLR to: ", gis_nc_global_outpath)
     ds_gis.to_netcdf(gis_nc_global_outpath)
 
     wais_nc_global_outpath = os.path.join(
         output_path, "{0}_{1}_globalsl.nc".format(pipeline_id, "WAIS")
-        )
-    print('Writing WAIS global SLR to: ', wais_nc_global_outpath)
+    )
+    print("Writing WAIS global SLR to: ", wais_nc_global_outpath)
     ds_wais.to_netcdf(wais_nc_global_outpath)
-    
+
     eais_nc_global_outpath = os.path.join(
         output_path, "{0}_{1}_globalsl.nc".format(pipeline_id, "EAIS")
-        )
-    print('Writing EAIS global SLR to: ', eais_nc_global_outpath)
+    )
+    print("Writing EAIS global SLR to: ", eais_nc_global_outpath)
     ds_eais.to_netcdf(eais_nc_global_outpath)
-    
+
     ais_nc_global_outpath = os.path.join(
         output_path, "{0}_{1}_globalsl.nc".format(pipeline_id, "AIS")
-        )
-    print('Writing AIS global SLR to: ', ais_nc_global_outpath)
+    )
+    print("Writing AIS global SLR to: ", ais_nc_global_outpath)
     ds_ais.to_netcdf(ais_nc_global_outpath)
 
-
-    #projection_ds_dict = {
+    # projection_ds_dict = {
     #    "EAIS": ds_eais,
     #    "WAIS": ds_wais,
     #    "AIS": ds_ais,
     #    "GIS": ds_gis,
-    #}
-    return projections_output#, projection_ds_dict
+    # }
+    return projections_output  # , projection_ds_dict
 
 
 def GetSATData(
@@ -404,14 +414,14 @@ def GetSATData(
     # Get number of ensemble members from the data
     _, nens = sat_ssp.shape
 
-    # Extract the years available 
+    # Extract the years available
     sat_years = ssp_folder["years"][()]
-    print('sat years shape: ', sat_years.shape)
-    #This should also work? 
-    #sat_years = df_ssp['sat_ssp']['years'][:]
-    #ds = xr.open_dataset(climate_data_file, group=scenario)
-    #sat_years = ds["years"].values
-    #print('sat years shape: ', sat_years.shape)
+    print("sat years shape: ", sat_years.shape)
+    # This should also work?
+    # sat_years = df_ssp['sat_ssp']['years'][:]
+    # ds = xr.open_dataset(climate_data_file, group=scenario)
+    # sat_years = ds["years"].values
+    # print('sat years shape: ', sat_years.shape)
     # Which indices align with the reference and trim years
     refyear_start_idx = np.flatnonzero(sat_years == refyear_start)[0]
     refyear_end_idx = np.flatnonzero(sat_years == refyear_end)[0]  # + 1

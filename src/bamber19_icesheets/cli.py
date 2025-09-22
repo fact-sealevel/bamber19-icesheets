@@ -1,4 +1,3 @@
-
 from bamber19_icesheets.bamber19_icesheets_preprocess import (
     bamber19_preprocess_icesheets,
 )
@@ -11,8 +10,6 @@ from bamber19_icesheets.bamber19_icesheets_postprocess import (
 )
 
 import click
-import os
-from pathlib import Path
 
 
 @click.command()
@@ -27,7 +24,7 @@ from pathlib import Path
     envvar="BAMBER19_ICESHEETS_PYEAR_START",
     help="Projection year start [default=2020]",
     default=2020,
-    type=click.IntRange(min=2020), 
+    type=click.IntRange(min=2020),
 )
 @click.option(
     "--pyear-end",
@@ -51,10 +48,10 @@ from pathlib import Path
 )
 @click.option(
     "--scenario",
-    envvar = "BAMBER19_ICESHEETS_SCENARIO",
+    envvar="BAMBER19_ICESHEETS_SCENARIO",
     help="Emissions scenario of interest [default=ssp585]",
-    default="ssp585", 
-    #NOTE, this is rcp85 in orig. module, updating to ssp585 per discussion in stcaf/tlm-sterodynamics issue #7
+    default="ssp585",
+    # NOTE, this is rcp85 in orig. module, updating to ssp585 per discussion in stcaf/tlm-sterodynamics issue #7
 )
 @click.option(
     "--climate-data-file",
@@ -79,7 +76,7 @@ from pathlib import Path
         "tlim2.0win0.25": "corefileL",
         "tlim5.0win0.25": "corefileH",
     },
-    type=dict
+    type=dict,
 )
 @click.option(
     "--nsamps",
@@ -150,7 +147,7 @@ def main(
 
     # Run preprocess step
     preprocess_output = bamber19_preprocess_icesheets(
-        #pipeline_id=pipeline_id,
+        # pipeline_id=pipeline_id,
         pyear_start=pyear_start,
         pyear_end=pyear_end,
         pyear_step=pyear_step,
@@ -163,7 +160,7 @@ def main(
     # No fit
 
     # Run project step
-    #if len(climate_data_file) == 0:
+    # if len(climate_data_file) == 0:
     if climate_data_file is None:
         project_output = bamber19_project_icesheets(
             nsamps=nsamps,
@@ -174,15 +171,13 @@ def main(
             output_path=output_path,
         )
     else:
-        project_output  = (
-            bamber19_project_icesheets_temperaturedriven(
-                climate_data_file=climate_data_file,
-                pipeline_id=pipeline_id,
-                replace=replace,
-                rngseed=rngseed,
-                preprocess_output=preprocess_output,
-                output_path=output_path,
-            )
+        project_output = bamber19_project_icesheets_temperaturedriven(
+            climate_data_file=climate_data_file,
+            pipeline_id=pipeline_id,
+            replace=replace,
+            rngseed=rngseed,
+            preprocess_output=preprocess_output,
+            output_path=output_path,
         )
     # Run postprocss step
     bamber19_postprocess_icesheets(
@@ -193,6 +188,7 @@ def main(
         pipeline_id=pipeline_id,
         output_path=output_path,
     )
+
 
 if __name__ == "__main__":
     main()
