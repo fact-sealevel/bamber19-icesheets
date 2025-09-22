@@ -5,6 +5,15 @@ import pickle as p
 import numpy as np
 import scipy.io
 
+''' bamber19_preprocess_icesheets.py
+
+This runs the preprocessing stage for the Bamber et al. 2019 ice sheet component of the IPCC AR6
+workflow.
+
+Parameters:
+pipeline_id = Unique identifier for the pipeline running this code
+
+'''
 
 def bamber19_preprocess_icesheets(
     pyear_start,
@@ -85,9 +94,7 @@ def bamber19_preprocess_icesheets(
             "scenario": scenario,
         }
         return out_data_all
-        # OutputDataAll(pipeline_id, eais_sampsH, wais_sampsH, gis_sampsH,  eais_sampsL, wais_sampsL, gis_sampsL, scenario, targyears, baseyear)
-        # return OutputDataAll
-
+        
     # If no climate data file provided
     else:
         this_corefile = scenario_map[scenario]
@@ -95,7 +102,7 @@ def bamber19_preprocess_icesheets(
             mat=mat, this_corefile=this_corefile, targyears=targyears, baseyear=baseyear
         )
         ais_samps = eais_samps + wais_samps
-        out_data_scene = {
+        out_data_scen = {
             "eais_samps": eais_samps,
             "wais_samps": wais_samps,
             "ais_samps": ais_samps,
@@ -104,9 +111,8 @@ def bamber19_preprocess_icesheets(
             "targyears": targyears,
             "baseyear": baseyear,
         }
-        return out_data_scene
-        # OutputDataScen(pipeline_id, eais_samps, wais_samps, gis_samps, scenario, targyears, baseyear)
-        # return OutputDataScen
+        return out_data_scen
+        
 
 
 def ExtractSamples(mat, this_corefile, targyears, baseyear):
