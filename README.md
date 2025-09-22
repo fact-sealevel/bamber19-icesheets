@@ -26,12 +26,25 @@ Now, run the CLI app:
 - replace the abs paths with machine-specific paths to the specified files.
 To run without cloning & creating project on local machine:
 ```shell
- uvx --from git+https://github.com/e-marshall/bamber19-icesheets.git@package bamber19-icesheets --pipeline-id 'testtest123' --climate-data-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc --scenario 'ssp585' --slr-proj-mat-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/SLRProjections190726core_SEJ_full.mat --location-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/location.lst --fingerprint-dir $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/grd_fingerprints_data/FPRINT --output-path $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/output
+ uvx --from git+https://github.com/e-marshall/bamber19-icesheets.git@package \
+ bamber19-icesheets --pipeline-id 'testtest123' \
+ --climate-data-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
+ --scenario 'ssp585' \
+ --slr-proj-mat-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/SLRProjections190726core_SEJ_full.mat \
+  --location-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/location.lst \
+  --fingerprint-dir $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/grd_fingerprints_data/FPRINT \
+  --output-path $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/output
 ```
 
 If project is cloned on machine:
 ```shell 
-uv run bamber19-icesheets --pipeline-id testest --climate-data-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc --scenario 'ssp585' --slr-proj-mat-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/SLRProjections190726core_SEJ_full.mat --location-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/location.lst --fingerprint-dir $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/grd_fingerprints_data/FPRINT --output-path $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/output
+uv run bamber19-icesheets --pipeline-id testest \
+--climate-data-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
+--scenario 'ssp585' \
+--slr-proj-mat-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/SLRProjections190726core_SEJ_full.mat \
+--location-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/location.lst \
+--fingerprint-dir $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/grd_fingerprints_data/FPRINT \
+--output-path $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/output
 ```
 
 ## Features
