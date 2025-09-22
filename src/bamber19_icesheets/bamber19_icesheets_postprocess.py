@@ -1,11 +1,12 @@
 import numpy as np
 import os
 import time
+import xarray as xr
+import dask.array as da
+
 from bamber19_icesheets.read_locationfile import ReadLocationFile
 from bamber19_icesheets.AssignFP import AssignFP
 
-import xarray as xr
-import dask.array as da
 
 
 def bamber19_postprocess_icesheets(
@@ -21,7 +22,7 @@ def bamber19_postprocess_icesheets(
     Postprocess global ice sheet projections to generate local sea level rise (SLR) at specified locations.
 
     This function applies spatial fingerprints to global ice sheet projections, producing localized SLR
-    projections for each site. The results are saved as NetCDF files for each ice sheet component and the total AIS.
+    projections for each ice sheet. The results are saved as NetCDF files for each ice sheet and the total AIS.
 
     Parameters
     ----------

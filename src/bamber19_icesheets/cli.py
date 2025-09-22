@@ -10,7 +10,6 @@ from bamber19_icesheets.bamber19_icesheets_postprocess import (
     bamber19_postprocess_icesheets,
 )
 
-
 import click
 import os
 from pathlib import Path
@@ -49,7 +48,6 @@ from pathlib import Path
     envvar="BAMBER19_ICESHEETS_BASEYEAR",
     help="Year to which projections are referenced [default = 2000]",
     default=2000,
-    #type=click.IntRange(2000, 2010), <- NOTE I'm not sure where this range came from?
 )
 @click.option(
     "--scenario",
@@ -146,32 +144,9 @@ def main(
     output_path,
 ) -> None:
     """
-    TODO: Add.
+    Application producing sea level projections from ice sheet contributions following the methods of Bamber et al., 2019. Samples of estimated global contribution to sea level are produced for each ice sheet. These are then adjusted by applying spatial fingerprints to produce localized SLR projections for each ice sheet.
     """
     click.echo("Hello from bamber-19 ice sheets!")
-    # Resolve paths
-    #project_root = Path(__file__).parent.parent.parent
-    #print('Project root: ', project_root)
-
-    #base = Path(data_dir)
-    #print('Base: ', base)
-    #input_base = Path(base.parent / 'input')
-
-    #base = base if base.is_absolute() else (project_root / base)
-    #base = base.resolve()
-    #print('Resolved base: ', base)
-
-    #climate_data_file = resolve_path(base, climate_data_file)
-    #slr_path = resolve_path(base, slr_proj_mat_file)
-    #location_file = resolve_path(base, location_file)
-    #fingerprint_dir = resolve_path(base, fingerprint_dir)
-
-    #output_path = Path(base.parent / output_path)
-    print("Climate data file: ", climate_data_file)
-    print("SLR proj mat fpath: ", slr_proj_mat_file)
-    print("Location fpath: ", location_file)
-    print("FP dir: ", fingerprint_dir)
-    print("Output path: ", output_path)
 
     # Run preprocess step
     preprocess_output = bamber19_preprocess_icesheets(
@@ -190,7 +165,6 @@ def main(
     # Run project step
     #if len(climate_data_file) == 0:
     if climate_data_file is None:
-        print("About to call bamber19_project_icesheets()")
         project_output = bamber19_project_icesheets(
             nsamps=nsamps,
             pipeline_id=pipeline_id,

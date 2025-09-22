@@ -21,26 +21,62 @@ echo "New_York	12	40.70	-74.01" > ./data/input/location.lst
 # Output projections will appear here
 mkdir -p ./data/output
 ```
-Now, run the CLI app (TODO: add docker + change this, just a stand-in for now):
+Now, run the CLI app:
 
 ```shell 
-uv run bamber19-icesheets --pipeline-id bamber19_ssp585_dummy_run --climate-data-file data/input/bamber19.ssp585.temperature.fair.temperature_climate.nc --scenario 'ssp585' --pyear-start 2020 --pyear-end 2150 --nsamps 500 --baseyear 2000 
-
+uv run bamber19-icesheets --pipeline-id testest --climate-data-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc --scenario 'ssp585' --slr-proj-mat-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/SLRProjections190726core_SEJ_full.mat --location-file $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/location.lst --fingerprint-dir $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/input/grd_fingerprints_data/FPRINT --output-path $HOME/Desktop/facts_work/facts_v2/bamber19-icesheets/data/output
 ```
+NOTE: when running locally, need to give abs paths, will work shorter paths with docker once set up. TODO
 
 ## Features
 Several options and configurations are available when running the container. 
+
 ```shell
-TO DO INSERT
+Usage: bamber19-icesheets [OPTIONS]
+
+  Application producing sea level projections from ice sheet contributions
+  following the methods of Bamber et al., 2019. Samples of estimated global
+  contribution to sea level are produced for each ice sheet. These are then
+  adjusted by applying spatial fingerprints to produce localized SLR
+  projections for each ice sheet.
+
+Options:
+  --pipeline-id TEXT           Unique identifier for this instance of the
+                               module. Used to name output files.  [required]
+  --pyear-start INTEGER RANGE  Projection year start [default=2020]  [x>=2020]
+  --pyear-end INTEGER RANGE    Projection year end [default=2100]  [x<=2300]
+  --pyear-step INTEGER RANGE   Projection year step [default=10]  [x>=1]
+  --baseyear INTEGER           Year to which projections are referenced
+                               [default = 2000]
+  --scenario TEXT              Emissions scenario of interest [default=ssp585]
+  --climate-data-file TEXT     NetCDF4/HDF5 file containing surface
+                               temperature data  [default: ""]
+  --slr-proj-mat-file TEXT     Path to the SLR projections matlab file
+                               [default: bamber19_icesheets_preprocess_data/SL
+                               RProjections190726core_SEJ_full.mat]
+  --scenario-map DICT          Mapping of scenario names to core files
+  --nsamps INTEGER             Number of samples to draw [default=500]
+  --replace INTEGER            Whether to sample with replacement [default=1]
+  --rngseed INTEGER            Seed for the random number generator
+                               [default=1234]
+  --location-file TEXT         Path to location file for postprocessing
+  --chunksize INTEGER          Chunk size for postprocessing [default=50]
+  --fingerprint-dir TEXT       Directory to save postprocessed files to
+                               [default='']
+  --output-path TEXT           Directory to save postprocessed files to
+                               [default='output/']
+  --help                       Show this message and exit.
 ```
 
 See this help documentation by running: 
 ```shell
-TO DO INSERT
+uv run bamber19-icesheets --help 
 ```
 
 ## Results
 If this module runs successfully, output projections will appear in `./data/output`. For each ice sheet (EAIS, WAIS, AIS, GIS), two netCDF files are written: one of projections of ice sheet contribution to global sea-level change and one of sampled projections of ice sheet contribution to local sea-level change. 
+
+## Run locally
 
 ## Notes
 - All input arguments in the [original module](https://github.com/stcaf-org/bamber19-icesheets/tree/main/modules/bamber19/icesheets) are defined in `cli.py` and passed to `main()`. 
