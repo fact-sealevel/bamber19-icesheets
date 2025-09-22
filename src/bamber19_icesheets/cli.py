@@ -56,6 +56,7 @@ import click
 @click.option(
     "--climate-data-file",
     default="",
+    envvar="BAMBER19_ICESHEETS_CLIMATE_DATA_FILE",
     show_default=True,
     help="NetCDF4/HDF5 file containing surface temperature data",
 )
@@ -119,6 +120,7 @@ import click
 )
 @click.option(
     "--output-path",
+    envvar="BAMBER19_ICESHEETS_OUTPUT_PATH",
     help="Directory to save postprocessed files to [default='output/']",
     default="output/",
 )
