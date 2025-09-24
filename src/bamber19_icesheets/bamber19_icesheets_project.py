@@ -68,7 +68,6 @@ def make_projection_ds(
                 data,
                 {"units": "mm"},
             ),
-            # plain variables over 'locations' (not coords, to match your layout)
             "lat": (
                 ("locations",),
                 np.array([np.float32(np.inf)], dtype=np.float32),
@@ -79,7 +78,6 @@ def make_projection_ds(
             ),
         },
         coords={
-            # coordinate variables with same names as dims
             "years": (("years",), years),
             "samples": (("samples",), samples),
             "locations": (("locations",), locations),
