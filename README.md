@@ -1,5 +1,4 @@
 # bamber19-icesheets
-# bamber19-icesheets
 
 An application producing sea level projections by sampling from the Structured Expert Judgement ice sheet projections of Bamber et al. (2019). 
 
@@ -30,20 +29,26 @@ mkdir -p ./data/output
 ```
 
 ### Run in a container
-After you've cloned the repo and downloaded the necessary data, from the root directory, create a docker container:
+After you've cloned the repo and downloaded the necessary data, from the root directory, create a docker image that we will use to run the application:
 ```shell
 docker build -t bamber19-icesheets .
 ```
 
-Then, start a session in the container (`docker run`), mount a volume in the container that points to the location of the application (`--volume`), and set the working directory to the location of the app in the container (`-w`). Finally, call the application, passing the desired input arguments:
+Then, create a container based on the image (`docker run --rm`), mount volumes for both the input and output data sub-directories and set the working directory to the location of the app in the container (`-w`). Then, call the application, passing the desired input arguments and making sure that the paths for each input argument are relative to the mounted volumes:
 ```shell
-docker run -it --volume=path/to/bamber19-icesheets:/opt/bamber19-icesheets -w /opt/bamber19-icesheets --pipeline-id YOUR_PIPELINE_ID --slr-proj-mat-file data/input/SLRProjections190726core_SEJ_full.mat --climate-data-file data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc --location-file data/input/location.lst --fingerprint-dir data/input/grd_fingerprints_data/FPRINT --output-path data/output --scenario 'ssp585'
+docker run --rm -v ./data/input:/mnt/bamber_data_in:ro -v ./data/output:/mnt/bamber_data_out bamber19-icesheets --pipeline-id YOUR_PIPELINE_ID --slr-proj-mat-file /mnt/bamber_data_in/SLRProjections190726core_SEJ_full.mat --climate-data-file /mnt/bamber_data_in/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc --location-file /mnt/bamber_data_in/location.lst --fingerprint-dir /mnt/bamber_data_in/grd_fingerprints_data/FPRINT --output-path /mnt/bamber_data_out 
 ```
 ### Running locally
 
 After cloning the repository, from the root directory, run the application using `uv`:
 ```shell
-uv run  --pipeline-id YOUR_PIPELINE_ID --input-fname data/input/NZ_2km.txt --location-file data/input/location.lst --output-path data/output --rngseed 5678
+uv run bamber19-icesheets --pipeline-id YOUR_PIPELINE_ID \
+--climate-data-file path/to/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
+--scenario 'ssp585' \
+--slr-proj-mat-file path/to/data/input/SLRProjections190726core_SEJ_full.mat \
+--location-file path/to/data/input/location.lst \
+--fingerprint-dir path/to/data/input/grd_fingerprints_data/FPRINT \
+--output-path path/to/data/output
 ```
 ### Run remote scripts
 To run without cloning & building a container on your local machine:
