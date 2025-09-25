@@ -14,7 +14,7 @@ There are multiple ways to run the application. You can clone the repository and
 ### Setup
 If you clone the directory, make sure that the data sub-directory is in the root directory. 
 ```shell
-git clone git@github.com:e-marshall/bamber19-icesheets.git
+git clone -b package git@github.com:e-marshall/bamber19-icesheets.git
 ```
 If you don't clone the repository, create a new directory and from here, create download the necessary data to prepare for the run. 
 ```shell
@@ -35,14 +35,27 @@ docker build -t bamber19-icesheets .
 ```
 
 Then, start a session in the container (`docker run`), mount a volume in the container that points to the location of the application (`--volume`), and set the working directory to the location of the app in the container (`-w`). Finally, call the application, passing the desired input arguments:
+
 ```shell
-docker run -it --volume=path/to/bamber19-icesheets:/opt/bamber19-icesheets -w /opt/bamber19-icesheets --pipeline-id YOUR_PIPELINE_ID --slr-proj-mat-file data/input/SLRProjections190726core_SEJ_full.mat --climate-data-file data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc --location-file data/input/location.lst --fingerprint-dir data/input/grd_fingerprints_data/FPRINT --output-path data/output --scenario 'ssp585'
+docker run -it --volume=path/to/bamber19-icesheets:/opt/bamber19-icesheets \
+-w /opt/bamber19-icesheets \
+--pipeline-id YOUR_PIPELINE_ID --slr-proj-mat-file data/input/SLRProjections190726core_SEJ_full.mat \
+--climate-data-file data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
+--location-file data/input/location.lst \
+--fingerprint-dir data/input/grd_fingerprints_data/FPRINT \
+--output-path data/output --scenario 'ssp585'
 ```
 ### Running locally
 
 After cloning the repository, from the root directory, run the application using `uv`:
 ```shell
-uv run  --pipeline-id YOUR_PIPELINE_ID --input-fname data/input/NZ_2km.txt --location-file data/input/location.lst --output-path data/output --rngseed 5678
+uv run bamber19-icesheets --pipeline-id YOUR_PIPELINE_ID \
+--climate-data-file path/to/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
+--scenario 'ssp585' \
+--slr-proj-mat-file path/to/data/input/SLRProjections190726core_SEJ_full.mat \
+--location-file path/to/data/input/location.lst \
+--fingerprint-dir path/to/data/input/grd_fingerprints_data/FPRINT \
+--output-path path/to/data/output
 ```
 ### Run remote scripts
 To run without cloning & building a container on your local machine:
