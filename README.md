@@ -9,21 +9,14 @@ An application producing sea level projections by sampling from the Structured E
 
 This application can run on emissions-projected climate data. For example, you can use the output `climate.nc` file from the [fair model container](https://github.com/stcaf-org/fair-temperature). Additional input data is located in this repository.
 
-There are multiple options for running application. You can clone the repository and run the progrogram in a Docker container built from the provided `Dockerfile`. Alternatively, you can run the scripts that are hosted remotely on GitHub using `uvx --from`.
+There are multiple ways to run the application. You can clone the repository and run the program in a Docker container built from the provided `Dockerfile` or using `uv`. Alternatively, you can run the scripts that are hosted remotely on GitHub using `uvx --from`.
 
-If you clone the directory, make sure that the data directory is in the root directory. Before running the application, the directory structure should look something like:
-├── bamber19-icesheets/
-│   ├── data/
-│       └── input/
-│       └── output/
-├── src/
-├── pyproject.toml
-└── README.md   
-
+### Setup
+If you clone the directory, make sure that the data sub-directory is in the root directory. 
 ```shell
 git clone git@github.com:e-marshall/bamber19-icesheets.git
 ```
-Create a new directory and download the required input data to prepare for the run:
+If you don't clone the repository, create a new directory and from here, create download the necessary data to prepare for the run. 
 ```shell
 # Input data we will pass to the container
 mkdir -p ./data/input
@@ -36,21 +29,26 @@ mkdir -p ./data/output
 ```
 
 ### Run in a container
-First creat a container:
+After you've cloned the repo and downloaded the necessary data, from the root directory, create a docker container:
 ```shell
 docker build -t bamber19-icesheets .
 ```
 
-Then, start an interactive session in the container (`docker run --it`), mount a volume in the container that points to the location of the application (`--volume`), set the working directory to the location of the app in the container (`-w`) and call the application and pass the desired input arguments:
+Then, start a session in the container (`docker run`), mount a volume in the container that points to the location of the application (`--volume`), and set the working directory to the location of the app in the container (`-w`). Finally, call the application, passing the desired input arguments:
 ```shell
-docker run -it --volume=$HOME/Desktop/facts_work/facts_v2/bamber19-icesheets:/opt/facts -w /opt/facts  bamber19-icesheets --pipeline-id dockerrun_test --slr-proj-mat-file data/input/SLRProjections190726core_SEJ_full.mat --climate-data-file data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc --location-file data/input/location.lst --fingerprint-dir data/input/grd_fingerprints_data/FPRINT --output-path data/output
+docker run -it --volume=path/to/bamber19-icesheets:/opt/bamber19-icesheets -w /opt/bamber19-icesheets --pipeline-id YOUR_PIPELINE_ID --slr-proj-mat-file data/input/SLRProjections190726core_SEJ_full.mat --climate-data-file data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc --location-file data/input/location.lst --fingerprint-dir data/input/grd_fingerprints_data/FPRINT --output-path data/output --scenario 'ssp585'
 ```
+### Running locally
 
-### Running from scripts hosted remotely
+After cloning the repository, from the root directory, run the application using `uv`:
+```shell
+uv run  --pipeline-id YOUR_PIPELINE_ID --input-fname data/input/NZ_2km.txt --location-file data/input/location.lst --output-path data/output --rngseed 5678
+```
+### Run remote scripts
 To run without cloning & building a container on your local machine:
 ```shell
  uvx --from git+https://github.com/e-marshall/bamber19-icesheets.git@package \
- bamber19-icesheets --pipeline-id 'testtest123' \
+ bamber19-icesheets --pipeline-id YOUR_PIPELINE_ID \
  --climate-data-file path/to/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
  --scenario 'ssp585' \
  --slr-proj-mat-file path/to/data/input/SLRProjections190726core_SEJ_full.mat \
@@ -99,7 +97,12 @@ Options:
   --help                       Show this message and exit.
 ```
 
-See this help documentation by running: 
+See this help documentation by passing the `--help` flag when running the application in any of the options above. For example: 
+
+```shell
+uvx --from git+https://github.com/e-marshall/bamber19-icesheets.git@package bamber19-icesheets --help
+```   
+
 ```shell
 uv run bamber19-icesheets --help 
 ```
