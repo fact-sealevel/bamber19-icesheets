@@ -36,7 +36,14 @@ docker build -t bamber19-icesheets .
 
 Then, create a container based on the image (`docker run --rm`), mount volumes for both the input and output data sub-directories and set the working directory to the location of the app in the container (`-w`). Then, call the application, passing the desired input arguments and making sure that the paths for each input argument are relative to the mounted volumes:
 ```shell
-docker run --rm -v ./data/input:/mnt/bamber_data_in:ro -v ./data/output:/mnt/bamber_data_out bamber19-icesheets --pipeline-id YOUR_PIPELINE_ID --slr-proj-mat-file /mnt/bamber_data_in/SLRProjections190726core_SEJ_full.mat --climate-data-file /mnt/bamber_data_in/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc --location-file /mnt/bamber_data_in/location.lst --fingerprint-dir /mnt/bamber_data_in/grd_fingerprints_data/FPRINT --output-path /mnt/bamber_data_out 
+docker run --rm -v ./data/input:/mnt/bamber_data_in:ro \
+-v ./data/output:/mnt/bamber_data_out bamber19-icesheets \
+--pipeline-id YOUR_PIPELINE_ID \
+--slr-proj-mat-file /mnt/bamber_data_in/SLRProjections190726core_SEJ_full.mat \
+--climate-data-file /mnt/bamber_data_in/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
+--location-file /mnt/bamber_data_in/location.lst \
+--fingerprint-dir /mnt/bamber_data_in/grd_fingerprints_data/FPRINT \
+--output-path /mnt/bamber_data_out 
 ```
 ### Running locally
 
