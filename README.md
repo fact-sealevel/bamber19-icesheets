@@ -14,7 +14,7 @@ There are multiple ways to run the application. You can clone the repository and
 ### Setup
 If you clone the directory, make sure that the data sub-directory is in the root directory. 
 ```shell
-git clone git@github.com:e-marshall/bamber19-icesheets.git
+git clone -b fix_history_package git@github.com:e-marshall/bamber19-icesheets.git
 ```
 If you don't clone the repository, create a new directory and from here, create download the necessary data to prepare for the run. 
 ```shell
@@ -53,7 +53,7 @@ uv run bamber19-icesheets --pipeline-id YOUR_PIPELINE_ID \
 ### Run remote scripts
 To run without cloning & building a container on your local machine:
 ```shell
- uvx --from git+https://github.com/e-marshall/bamber19-icesheets.git@package \
+ uvx --from git+https://github.com/e-marshall/bamber19-icesheets.git@fix_history_package \
  bamber19-icesheets --pipeline-id YOUR_PIPELINE_ID \
  --climate-data-file path/to/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
  --scenario 'ssp585' \
@@ -106,7 +106,7 @@ Options:
 See this help documentation by passing the `--help` flag when running the application in any of the options above. For example: 
 
 ```shell
-uvx --from git+https://github.com/e-marshall/bamber19-icesheets.git@package bamber19-icesheets --help
+uvx --from git+https://github.com/e-marshall/bamber19-icesheets.git@fix_history_package bamber19-icesheets --help
 ```   
 
 ```shell
