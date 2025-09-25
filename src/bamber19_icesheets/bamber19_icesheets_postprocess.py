@@ -193,7 +193,6 @@ def bamber19_postprocess_icesheets(
     gis_nc_outpath = os.path.join(
         output_path, "{0}_{1}_localsl.nc".format(pipeline_id, "GIS")
     )
-    print("Writing GIS local SLR to: ", gis_nc_outpath)
     gis_out.to_netcdf(
         gis_nc_outpath,
         encoding={
@@ -209,7 +208,6 @@ def bamber19_postprocess_icesheets(
     wais_nc_path = os.path.join(
         output_path, "{0}_{1}_localsl.nc".format(pipeline_id, "WAIS")
     )
-    print("Writing WAIS local SLR to: ", wais_nc_path)
     wais_out.to_netcdf(
         wais_nc_path,
         encoding={
@@ -224,7 +222,6 @@ def bamber19_postprocess_icesheets(
     eais_nc_path = os.path.join(
         output_path, "{0}_{1}_localsl.nc".format(pipeline_id, "EAIS")
     )
-    print("Writing EAIS local SLR to: ", eais_nc_path)
     eais_out.to_netcdf(
         eais_nc_path,
         encoding={
@@ -239,7 +236,6 @@ def bamber19_postprocess_icesheets(
     ais_nc_path = os.path.join(
         output_path, "{0}_{1}_localsl.nc".format(pipeline_id, "AIS")
     )
-    print("Writing AIS local SLR to: ", ais_nc_path)
     ais_out.to_netcdf(
         ais_nc_path,
         encoding={

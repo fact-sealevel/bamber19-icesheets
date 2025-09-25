@@ -213,25 +213,21 @@ def bamber19_project_icesheets(
     gis_nc_global_outpath = os.path.join(
         output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "GIS")
     )
-    print("Writing GIS global SLR to: ", gis_nc_global_outpath)
     ds_gis.to_netcdf(gis_nc_global_outpath)
 
     wais_nc_global_outpath = os.path.join(
         output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "WAIS")
     )
-    print("Writing WAIS global SLR to: ", wais_nc_global_outpath)
     ds_wais.to_netcdf(wais_nc_global_outpath)
 
     eais_nc_global_outpath = os.path.join(
         output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "EAIS")
     )
-    print("Writing EAIS global SLR to: ", eais_nc_global_outpath)
     ds_eais.to_netcdf(eais_nc_global_outpath)
 
     ais_nc_global_outpath = os.path.join(
         output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "AIS")
     )
-    print("Writing AIS global SLR to: ", ais_nc_global_outpath)
     ds_ais.to_netcdf(ais_nc_global_outpath)
     return icesheets_output
 
@@ -369,15 +365,8 @@ def bamber19_project_icesheets_temperaturedriven(
     print("Writing AIS global SLR to: ", ais_nc_global_outpath)
     ds_ais.to_netcdf(ais_nc_global_outpath)
 
-    # Originally, didn't write this to avoid writing intermediate files but 
-    # changed to write to match FACTS 1. could move writes to all happein in one place?
-    # projection_ds_dict = {
-    #    "EAIS": ds_eais,
-    #    "WAIS": ds_wais,
-    #    "AIS": ds_ais,
-    #    "GIS": ds_gis,
-    # }
-    return icesheets_output  # , projection_ds_dict
+    
+    return icesheets_output  
 
 
 def GetSATData(
@@ -396,9 +385,6 @@ def GetSATData(
     - Normalize, crop temp series,
     - Return normalized SAT (Surface air temp) & time arrays and number of ensemble members.
     """
-
-    # Open the climate data file
-    print("target module reached")
 
     df_ssp = h5py.File(climate_data_file, "r")
 
