@@ -9,8 +9,21 @@ An application producing sea level projections by sampling from the Structured E
 
 This application can run on emissions-projected climate data. For example, you can use the output `climate.nc` file from the [fair model container](https://github.com/stcaf-org/fair-temperature). Additional input data is located in this repository.
 
-First, create a new directory and download the required input data to prepare for the run. 
+There are multiple options for running application. You can clone the repository and run the progrogram in a Docker container built from the provided `Dockerfile`. Alternatively, you can run the scripts that are hosted remotely on GitHub using `uvx --from`.
 
+If you clone the directory, make sure that the data directory is in the root directory. Before running the application, the directory structure should look something like:
+├── bamber19-icesheets/
+│   ├── data/
+│       └── input/
+│       └── output/
+├── src/
+├── pyproject.toml
+└── README.md   
+
+```shell
+git clone git@github.com:e-marshall/bamber19-icesheets.git
+```
+Create a new directory and download the required input data to prepare for the run:
 ```shell
 # Input data we will pass to the container
 mkdir -p ./data/input
@@ -21,10 +34,20 @@ echo "New_York	12	40.70	-74.01" > ./data/input/location.lst
 # Output projections will appear here
 mkdir -p ./data/output
 ```
-Now, run the CLI app:
-(note, haven't setup docker yet so this is a stand-in):
-- replace the abs paths with machine-specific paths to the specified files.
-To run without cloning & creating project on local machine:
+
+### Run in a container
+First creat a container:
+```shell
+docker build -t bamber19-icesheets .
+```
+
+Then, start an interactive session in the container (`docker run --it`), mount a volume in the container that points to the location of the application (`--volume`), set the working directory to the location of the app in the container (`-w`) and call the application and pass the desired input arguments:
+```shell
+docker run -it --volume=$HOME/Desktop/facts_work/facts_v2/bamber19-icesheets:/opt/facts -w /opt/facts  bamber19-icesheets --pipeline-id dockerrun_test --slr-proj-mat-file data/input/SLRProjections190726core_SEJ_full.mat --climate-data-file data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc --location-file data/input/location.lst --fingerprint-dir data/input/grd_fingerprints_data/FPRINT --output-path data/output
+```
+
+### Running from scripts hosted remotely
+To run without cloning & building a container on your local machine:
 ```shell
  uvx --from git+https://github.com/e-marshall/bamber19-icesheets.git@package \
  bamber19-icesheets --pipeline-id 'testtest123' \
@@ -34,17 +57,6 @@ To run without cloning & creating project on local machine:
  --location-file path/to/data/input/location.lst \
  --fingerprint-dir path/to/data/input/grd_fingerprints_data/FPRINT \
  --output-path path/to/data/output
-```
-
-If project is cloned on machine:
-```shell 
-uv run bamber19-icesheets --pipeline-id testest \
---climate-data-file path/to/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
---scenario 'ssp585' \
---slr-proj-mat-file path/to/data/input/SLRProjections190726core_SEJ_full.mat \
---location-file path/to/data/input/location.lst \
---fingerprint-dir path/to/data/input/grd_fingerprints_data/FPRINT \
---output-path path/to/data/output
 ```
 
 ## Features
@@ -94,19 +106,6 @@ uv run bamber19-icesheets --help
 
 ## Results
 If this module runs successfully, output projections will appear in `./data/output`. For each ice sheet (EAIS, WAIS, AIS, GIS), two netCDF files are written: one of projections of ice sheet contribution to global sea-level change and one of sampled projections of ice sheet contribution to local sea-level change. 
-
-## Run locally
-Once the data download step in the example section has been completed, this program can be run locally without downloading the repo by running the following: 
-```shell
- uvx --from git+https://github.com/e-marshall/bamber19-icesheets.git@package \
- bamber19-icesheets --pipeline-id 'testtest123' \
- --climate-data-file path/to/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
- --scenario 'ssp585' \
- --slr-proj-mat-file path/to/data/input/SLRProjections190726core_SEJ_full.mat \
- --location-file path/to/data/input/location.lst \
- --fingerprint-dir path/to/data/input/grd_fingerprints_data/FPRINT \
- --output-path path/to/data/output
-```
 
 ## Notes
 (these probably belong elsewhere but have them here for now)
