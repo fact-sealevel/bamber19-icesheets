@@ -148,14 +148,15 @@ def bamber19_project_icesheets(
     gis_samps = gis_samples[sample_inds, :]
 
     ## In original bamber19_project_icesheets(), WriteOutput() is called and 'scenario' is passed.
-    ## However, in WriteOutput(), 'scenario' isn't used, its hardcoded  as 'temperature-driven'.
+    ## However, in WriteOutput(), 'scenario' isn't used, its hardcoded  as 'temperature-driven'. 
+    # not sure if intended or not
     icesheets_output = {
         "eais_samps": eais_samps,
         "wais_samps": wais_samps,
         "ais_samps": ais_samps,
         "gis_samps": gis_samps,
         "years": years,
-        "scenario": scenario,  # 'temperature-driven', BUG? See above comment.
+        "scenario": 'temperature-driven', # leaving as is (not using scenario obj for now)
         "baseyear": baseyear,
     }
 

@@ -22,7 +22,6 @@ def bamber19_preprocess_icesheets(
     baseyear,
     scenario,
     slr_proj_mat_fpath: str,
-    scenario_map: dict,
     climate_data_file: str,
 ) -> dict:
     """
@@ -45,8 +44,6 @@ def bamber19_preprocess_icesheets(
         Emissions scenario name (e.g., 'rcp85').
     slr_proj_mat_fpath : str
         File path to the MATLAB .mat file containing SLR projections.
-    scenario_map : dict
-        Mapping from scenario names to corefile keys in the .mat file.
     climate_data_file : str
         Path to climate data file. If not None, both high and low scenario samples are extracted.
 
@@ -97,6 +94,8 @@ def bamber19_preprocess_icesheets(
         
     # If no climate data file provided
     else:
+        scenario_map = {"rcp85": 'corefileH', "rcp26": 'corefileL',  \
+						"tlim2.0win0.25": 'corefileL', "tlim5.0win0.25": 'corefileH'}
         this_corefile = scenario_map[scenario]
         wais_samps, eais_samps, gis_samps = ExtractSamples(
             mat=mat, this_corefile=this_corefile, targyears=targyears, baseyear=baseyear
@@ -174,84 +173,6 @@ def ExtractSamples(mat, this_corefile, targyears, baseyear):
     wais_samps = wais_samps[:, mat_years_idx]
     gis_samps = gis_samps[:, mat_years_idx]
     return wais_samps, eais_samps, gis_samps
-
-
-def OutputDataScen(
-    pipeline_id, eais_samps, wais_samps, gis_samps, scenario, targyears, baseyear
-):
-    """Create an output dictionary for a single scenario (?)."""
-
-    # Sum up the components to get total AIS samples
-    ais_samps = eais_samps + wais_samps
-
-    # Populate the output dictionary
-    outdata = {
-        "eais_samps": eais_samps,
-        "wais_samps": wais_samps,
-        "ais_samps": ais_samps,
-        "gis_samps": gis_samps,
-        "scenario": scenario,
-        "targyears": targyears,
-        "baseyear": baseyear,
-    }
-    # Define the data directory
-    outdir = os.path.dirname(__file__)
-
-    # Write the rates data to a pickle file
-    outfile = open(os.path.join(outdir, "{}_data.pkl".format(pipeline_id)), "wb")
-    p.dump(outdata, outfile)
-    outfile.close()
-
-
-def OutputDataAll(
-    pipeline_id,
-    eais_sampsH,
-    wais_sampsH,
-    gis_sampsH,
-    eais_sampsL,
-    wais_sampsL,
-    gis_sampsL,
-    scenario,
-    targyears,
-    baseyear,
-) -> dict:
-    """
-    Create and save an output dictionary for both high and low scenarios.
-
-    Parameters:
-        pipeline_id (str): Unique identifier for the pipeline run.
-        eais_sampsH, wais_sampsH, gis_sampsH (array): High scenario samples.
-        eais_sampsL, wais_sampsL, gis_sampsL (array): Low scenario samples.
-        scenario (str): Scenario name.
-        targyears (array): Target years.
-        baseyear (int): Reference year.
-    """
-    # Sum up the components to get total AIS samples
-    ais_sampsH = eais_sampsH + wais_sampsH
-    ais_sampsL = eais_sampsL + wais_sampsL
-
-    # Populate the output dictionary
-    outdata = {
-        "eais_sampsH": eais_sampsH,
-        "wais_sampsH": wais_sampsH,
-        "ais_sampsH": ais_sampsH,
-        "gis_sampsH": gis_sampsH,
-        "eais_sampsL": eais_sampsL,
-        "wais_sampsL": wais_sampsL,
-        "ais_sampsL": ais_sampsL,
-        "gis_sampsL": gis_sampsL,
-        "targyears": targyears,
-        "baseyear": baseyear,
-        "scenario": scenario,
-    }
-    # Define the data directory
-    outdir = os.path.dirname(__file__)
-
-    # Write the rates data to a pickle file
-    outfile = open(os.path.join(outdir, f"{pipeline_id}_data.pkl"), "wb")
-    p.dump(outdata, outfile)
-    outfile.close()
-
 
 def FindRefVals(timeseries, years, baseyear):
     # Append a zero to the beginning of the timeseries at year 2000

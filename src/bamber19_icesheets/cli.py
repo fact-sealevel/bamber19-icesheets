@@ -67,18 +67,7 @@ import click
     show_default=True,
     help="Path to the SLR projections matlab file",
 )
-@click.option(
-    "--scenario-map",
-    envvar="BAMBER19_ICESHEETS_SCENARIO_MAP",
-    help="Mapping of scenario names to core files",
-    default={
-        "rcp85": "corefileH",
-        "rcp26": "corefileL",
-        "tlim2.0win0.25": "corefileL",
-        "tlim5.0win0.25": "corefileH",
-    },
-    type=dict,
-)
+
 @click.option(
     "--nsamps",
     envvar="BAMBER19_ICESHEETS_NSAMPS",
@@ -132,7 +121,6 @@ def main(
     scenario,
     climate_data_file,
     slr_proj_mat_file,
-    scenario_map,
     nsamps,
     rngseed,
     location_file,
@@ -155,7 +143,6 @@ def main(
         baseyear=baseyear,
         scenario=scenario,
         slr_proj_mat_fpath=slr_proj_mat_file,
-        scenario_map=scenario_map,
         climate_data_file=climate_data_file,
     )
     # No fit
