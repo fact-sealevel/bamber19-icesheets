@@ -9,14 +9,16 @@ An application producing sea level projections by sampling from the Structured E
 
 This application can run on emissions-projected climate data. For example, you can use the output `climate.nc` file from the [fair model container](https://github.com/stcaf-org/fair-temperature). Additional input data is located in this repository.
 
-There are multiple ways to run the application. You can clone the repository and run the program in a Docker container built from the provided `Dockerfile` or using `uv`. Alternatively, you can run the scripts that are hosted remotely on GitHub using `uvx --from`.
-
 ### Setup
-If you clone the directory, make sure that the data sub-directory is in the root directory. 
+
+Clone the repository and create directories to hold input and output data. 
+
 ```shell
 git clone -b fix_history_package git@github.com:e-marshall/bamber19-icesheets.git
 ```
-If you don't clone the repository, create a new directory and from here, create download the necessary data to prepare for the run. 
+
+Download input data using the following Zenodo records:
+
 ```shell
 # Input data we will pass to the container
 mkdir -p ./data/input
@@ -28,46 +30,28 @@ echo "New_York	12	40.70	-74.01" > ./data/input/location.lst
 mkdir -p ./data/output
 ```
 
-### Run in a container
-After you've cloned the repo and downloaded the necessary data, from the root directory, create a docker image that we will use to run the application:
+From the root directory, create a docker image that we will use to run the application:
 ```shell
 docker build -t bamber19-icesheets .
 ```
 
-Then, create a container based on the image (`docker run --rm`), mount volumes for both the input and output data sub-directories and set the working directory to the location of the app in the container (`-w`). Then, call the application, passing the desired input arguments and making sure that the paths for each input argument are relative to the mounted volumes:
+Create a container based on the image (`docker run --rm`), mount volumes for both the input and output data sub-directories and set the working directory to the location of the app in the container (`-w`). Then, call the application, passing the desired input arguments and making sure that the paths for each input argument are relative to the mounted volumes. Pass a full path for each output file that you would like the program to write. Output objects will only be written to file if a path is passed as an input argument. In the example below, all possible outputs (local and global projections for each ice sheet) are written:
+
 ```shell
 docker run --rm -v ./data/input:/mnt/bamber_data_in:ro \
 -v ./data/output:/mnt/bamber_data_out bamber19-icesheets \
---pipeline-id YOUR_PIPELINE_ID \
 --slr-proj-mat-file /mnt/bamber_data_in/SLRProjections190726core_SEJ_full.mat \
 --climate-data-file /mnt/bamber_data_in/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
 --location-file /mnt/bamber_data_in/location.lst \
 --fingerprint-dir /mnt/bamber_data_in/grd_fingerprints_data/FPRINT \
---output-path /mnt/bamber_data_out 
-```
-### Running locally
-
-After cloning the repository, from the root directory, run the application using `uv`:
-```shell
-uv run bamber19-icesheets --pipeline-id YOUR_PIPELINE_ID \
---climate-data-file path/to/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
---scenario 'ssp585' \
---slr-proj-mat-file path/to/data/input/SLRProjections190726core_SEJ_full.mat \
---location-file path/to/data/input/location.lst \
---fingerprint-dir path/to/data/input/grd_fingerprints_data/FPRINT \
---output-path path/to/data/output
-```
-### Run remote scripts
-To run without cloning & building a container on your local machine:
-```shell
- uvx --from git+https://github.com/e-marshall/bamber19-icesheets.git@fix_history_package \
- bamber19-icesheets --pipeline-id YOUR_PIPELINE_ID \
- --climate-data-file path/to/data/input/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
- --scenario 'ssp585' \
- --slr-proj-mat-file path/to/data/input/SLRProjections190726core_SEJ_full.mat \
- --location-file path/to/data/input/location.lst \
- --fingerprint-dir path/to/data/input/grd_fingerprints_data/FPRINT \
- --output-path path/to/data/output
+--output-EAIS-lslr-file /mnt/bamber_data_out/output_eais_lslr.nc \
+--output-WAIS-lslr-file /mnt/bamber_data_out/output_wais_lslr.nc \
+--output-GIS-lslr-file /mnt/bamber_data_out/output_gis_lslr.nc \
+--output-AIS-gslr-file /mnt/bamber_data_out/output_ais_gslr.nc \
+--output-EAIS-gslr-file /mnt/bamber_data_out/output_eais_gslr.nc \
+--output-WAIS-gslr-file /mnt/bamber_data_out/output_wais_gslr.nc \
+--output-GIS-gslr-file /mnt/bamber_data_out/output_gis_gslr.nc \
+--output-AIS-gslr-file /mnt/bamber_data_out/output_ais_gslr.nc \
 ```
 
 ## Features
@@ -83,45 +67,62 @@ Usage: bamber19-icesheets [OPTIONS]
   projections for each ice sheet.
 
 Options:
-  --pipeline-id TEXT           Unique identifier for this instance of the
-                               module. Used to name output files.  [required]
-  --pyear-start INTEGER RANGE  Projection year start [default=2020]  [x>=2020]
-  --pyear-end INTEGER RANGE    Projection year end [default=2100]  [x<=2300]
-  --pyear-step INTEGER RANGE   Projection year step [default=10]  [x>=1]
-  --baseyear INTEGER           Year to which projections are referenced
-                               [default = 2000]
-  --scenario TEXT              Emissions scenario of interest [default=ssp585]
-  --climate-data-file TEXT     NetCDF4/HDF5 file containing surface
-                               temperature data  [default: ""]
-  --slr-proj-mat-file TEXT     Path to the SLR projections matlab file
-                               [default: bamber19_icesheets_preprocess_data/SL
-                               RProjections190726core_SEJ_full.mat]
-  --scenario-map DICT          Mapping of scenario names to core files
-  --nsamps INTEGER             Number of samples to draw [default=500]
-  --replace INTEGER            Whether to sample with replacement [default=1]
-  --rngseed INTEGER            Seed for the random number generator
-                               [default=1234]
-  --location-file TEXT         Path to location file for postprocessing
-  --chunksize INTEGER          Chunk size for postprocessing [default=50]
-  --fingerprint-dir TEXT       Directory to save postprocessed files to
-                               [default='']
-  --output-path TEXT           Directory to save postprocessed files to
-                               [default='output/']
-  --help                       Show this message and exit.
+  --pyear-start INTEGER RANGE   Projection year start [default=2020]
+                                [x>=2020]
+  --pyear-end INTEGER RANGE     Projection year end [default=2100]  [x<=2300]
+  --pyear-step INTEGER RANGE    Projection year step [default=10]  [x>=1]
+  --baseyear INTEGER            Year to which projections are referenced
+                                [default = 2000]
+  --scenario TEXT               Emissions scenario of interest
+                                [default=ssp585]
+  --climate-data-file TEXT      NetCDF4/HDF5 file containing surface
+                                temperature data  [default: ""]
+  --slr-proj-mat-file TEXT      Path to the SLR projections matlab file
+                                [default: bamber19_icesheets_preprocess_data/S
+                                LRProjections190726core_SEJ_full.mat]
+  --nsamps INTEGER              Number of samples to draw [default=500]
+  --replace INTEGER             Whether to sample with replacement [default=1]
+  --rngseed INTEGER             Seed for the random number generator
+                                [default=1234]
+  --location-file TEXT          Path to location file for postprocessing
+  --chunksize INTEGER           Chunk size for postprocessing [default=50]
+  --fingerprint-dir TEXT        Directory to save postprocessed files to
+                                [default='']
+  --output-EAIS-lslr-file TEXT  Path to write EAIS contribution to local SLR
+                                output file. If not provided, file will not be
+                                written.
+  --output-WAIS-lslr-file TEXT  Path to write WAIS contribution to local SLR
+                                output file. If not provided, file will not be
+                                written.
+  --output-GIS-lslr-file TEXT   Path to write GIS contribution to local SLR
+                                output file. If not provided, file will not be
+                                written.
+  --output-AIS-lslr-file TEXT   Path to write AIS contribution to local SLR
+                                output file. If not provided, file will not be
+                                written.
+  --output-EAIS-gslr-file TEXT  Path to write EAIS contribution to global SLR
+                                output file. If not provided, file will not be
+                                written.
+  --output-WAIS-gslr-file TEXT  Path to write WAIS contribution to global SLR
+                                output file. If not provided, file will not be
+                                written.
+  --output-GIS-gslr-file TEXT   Path to write GIS contribution to global SLR
+                                output file. If not provided, file will not be
+                                written.
+  --output-AIS-gslr-file TEXT   Path to write AIS contribution to global SLR
+                                output file. If not provided, file will not be
+                                written.
+  --help                        Show this message and exit.
 ```
 
 See this help documentation by passing the `--help` flag when running the application in any of the options above. For example: 
 
 ```shell
-uvx --from git+https://github.com/e-marshall/bamber19-icesheets.git@fix_history_package bamber19-icesheets --help
+docker run --rm bamber19-icesheets --help
 ```   
 
-```shell
-uv run bamber19-icesheets --help 
-```
-
 ## Results
-If this module runs successfully, output projections will appear in `./data/output`. For each ice sheet (EAIS, WAIS, AIS, GIS), two netCDF files are written: one of projections of ice sheet contribution to global sea-level change and one of sampled projections of ice sheet contribution to local sea-level change. 
+If this module runs successfully, output projections will appear in `./data/output`. For each ice sheet (EAIS, WAIS, AIS, GIS), two netCDF files may be written: one of projections of ice sheet contribution to global sea-level change and one of sampled projections of ice sheet contribution to local sea-level change. 
 
 ## Notes
 (these probably belong elsewhere but have them here for now)
