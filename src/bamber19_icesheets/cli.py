@@ -14,12 +14,6 @@ import click
 
 @click.command()
 @click.option(
-    "--pipeline-id",
-    envvar="BAMBER19_ICESHEETS_PIPELINE_ID",
-    help="Unique identifier for this instance of the module. Used to name output files.",
-    required=True,
-)
-@click.option(
     "--pyear-start",
     envvar="BAMBER19_ICESHEETS_PYEAR_START",
     help="Projection year start [default=2020]",
@@ -79,7 +73,6 @@ import click
     envvar="BAMBER19_ICESHEETS_REPLACE",
     help="Whether to sample with replacement [default=1]",
     default=1,
-    
 )
 @click.option(
     "--rngseed",
@@ -107,13 +100,63 @@ import click
     default="grd_fingerprints_data/FPRINT",
 )
 @click.option(
-    "--output-path",
-    envvar="BAMBER19_ICESHEETS_OUTPUT_PATH",
-    help="Directory to save postprocessed files to [default='output/']",
-    default="output/",
+    "--output-EAIS-lslr-file",
+    envvar="BAMBER19_ICESHEETS_OUTPUT_EAIS_LSLR_FILE",
+    help = "Path to write EAIS contribution to local SLR output file. If not provided, file will not be written.",
+    type=str, 
+    required=False,
 )
+@click.option(
+    "--output-WAIS-lslr-file",
+    envvar="BAMBER19_ICESHEETS_OUTPUT_WAIS_LSLR_FILE",
+    help = "Path to write WAIS contribution to local SLR output file. If not provided, file will not be written.",
+    type=str, 
+    required=False,
+)
+@click.option(
+    "--output-GIS-lslr-file",
+    envvar="BAMBER19_ICESHEETS_OUTPUT_GIS_LSLR_FILE",
+    help = "Path to write GIS contribution to local SLR output file. If not provided, file will not be written.",
+    type=str, 
+    required=False,
+)
+@click.option(
+    "--output-AIS-lslr-file",
+    envvar="BAMBER19_ICESHEETS_OUTPUT_AIS_LSLR_FILE",
+    help = "Path to write AIS contribution to local SLR output file. If not provided, file will not be written.",
+    type=str,
+    required=False,
+)
+@click.option(
+    "--output-EAIS-gslr-file",
+    envvar="BAMBER19_ICESHEETS_OUTPUT_EAIS_GSLR_FILE",
+    help = "Path to write EAIS contribution to global SLR output file. If not provided, file will not be written.",
+    type=str,
+    required=False,
+)
+@click.option(
+    "--output-WAIS-gslr-file",
+    envvar="BAMBER19_ICESHEETS_OUTPUT_WAIS_GSLR_FILE",
+    help = "Path to write WAIS contribution to global SLR output file. If not provided, file will not be written.",
+    type=str,
+    required=False,
+)
+@click.option(
+    "--output-GIS-gslr-file",
+    envvar="BAMBER19_ICESHEETS_OUTPUT_GIS_GSLR_FILE",
+    help = "Path to write GIS contribution to global SLR output file. If not provided, file will not be written.",
+    type=str,
+    required=False,
+)
+@click.option(
+    "--output-AIS-gslr-file",
+    envvar="BAMBER19_ICESHEETS_OUTPUT_AIS_GSLR_FILE",
+    help = "Path to write AIS contribution to global SLR output file. If not provided, file will not be written.",
+    type=str,
+    required=False,
+)
+
 def main(
-    pipeline_id,
     pyear_start,
     pyear_end,
     pyear_step,
@@ -127,7 +170,14 @@ def main(
     chunksize,
     fingerprint_dir,
     replace,
-    output_path,
+    output_eais_lslr_file,
+    output_wais_lslr_file,
+    output_gis_lslr_file,
+    output_ais_lslr_file,
+    output_eais_gslr_file,
+    output_wais_gslr_file,
+    output_gis_gslr_file,
+    output_ais_gslr_file
 ) -> None:
     """
     Application producing sea level projections from ice sheet contributions following the methods of Bamber et al., 2019. Samples of estimated global contribution to sea level are produced for each ice sheet. These are then adjusted by applying spatial fingerprints to produce localized SLR projections for each ice sheet.
@@ -136,7 +186,6 @@ def main(
 
     # Run preprocess step
     preprocess_output = bamber19_preprocess_icesheets(
-        # pipeline_id=pipeline_id,
         pyear_start=pyear_start,
         pyear_end=pyear_end,
         pyear_step=pyear_step,
@@ -145,27 +194,29 @@ def main(
         slr_proj_mat_fpath=slr_proj_mat_file,
         climate_data_file=climate_data_file,
     )
-    # No fit
 
     # Run project step
-    # if len(climate_data_file) == 0:
     if climate_data_file is None:
         project_output = bamber19_project_icesheets(
             nsamps=nsamps,
-            pipeline_id=pipeline_id,
             replace=replace,
             rngseed=rngseed,
             preprocess_output=preprocess_output,
-            output_path=output_path,
+            output_AIS_gslr_file=output_ais_gslr_file,
+            output_GIS_gslr_file=output_gis_gslr_file,
+            output_WAIS_gslr_file=output_wais_gslr_file,
+            output_EAIS_gslr_file=output_eais_gslr_file,
         )
     else:
         project_output = bamber19_project_icesheets_temperaturedriven(
             climate_data_file=climate_data_file,
-            pipeline_id=pipeline_id,
             replace=replace,
             rngseed=rngseed,
             preprocess_output=preprocess_output,
-            output_path=output_path,
+            output_AIS_gslr_file=output_ais_gslr_file,
+            output_GIS_gslr_file=output_gis_gslr_file,
+            output_WAIS_gslr_file=output_wais_gslr_file,
+            output_EAIS_gslr_file=output_eais_gslr_file
         )
     # Run postprocss step
     bamber19_postprocess_icesheets(
@@ -173,8 +224,10 @@ def main(
         location_fpath=location_file,
         chunksize=chunksize,
         fpdir=fingerprint_dir,
-        pipeline_id=pipeline_id,
-        output_path=output_path,
+        output_EAIS_lslr_file=output_eais_lslr_file,
+        output_WAIS_lslr_file=output_wais_lslr_file,
+        output_GIS_lslr_file=output_gis_lslr_file,
+        output_AIS_lslr_file=output_ais_lslr_file,
     )
 
 

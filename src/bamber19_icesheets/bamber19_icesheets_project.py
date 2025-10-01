@@ -24,7 +24,7 @@ Output:
 
 
 def make_projection_ds(
-    ice_source, global_samps, years, samples, locations, pipeline_id, scenario, baseyear
+    ice_source, global_samps, years, samples, locations, scenario, baseyear
 ):
     """
     Create an xarray Dataset for global sea level rise projections from ice sheet samples.
@@ -41,8 +41,6 @@ def make_projection_ds(
         Array of sample indices.
     locations : array-like
         Array of location indices (typically a single value for global projections).
-    pipeline_id : str
-        Unique identifier for the pipeline run.
     scenario : str
         Emissions scenario name.
     baseyear : int
@@ -85,7 +83,6 @@ def make_projection_ds(
         attrs={
             "description": f"Global SLR contribution from {ice_source} from the Bamber et al. 2019 IPCC AR6 workflow",
             "history": "Created " + time.ctime(time.time()),
-            "source": f"FACTS: {pipeline_id}",
             "scenario": scenario,
             "baseyear": baseyear,
         },
@@ -94,21 +91,26 @@ def make_projection_ds(
 
 
 def bamber19_project_icesheets(
-    nsamps, pipeline_id, replace, rngseed, preprocess_output, output_path: str
+    nsamps,
+    replace, 
+    rngseed, 
+    preprocess_output, 
+    output_AIS_glslr_file,
+    output_GIS_glslr_file,
+    output_WAIS_glslr_file,
+    output_EAIS_glslr_file,
 ):
     """
     Generate and save global sea level rise projections for ice sheets (if no climate data file is passed).
 
     This function samples from preprocessed ice sheet projections, creates xarray Datasets for each
-    ice sheet component, and writes the results to NetCDF files. It is used when a climate data file
+    ice sheet component, and writes the results to NetCDF file if path is provided. It is used when a climate data file
     is not provided.
 
     Parameters
     ----------
     nsamps : int
         Number of samples to generate.
-    pipeline_id : str
-        Unique identifier for the pipeline run.
     replace : bool
         Whether to sample with replacement.
     rngseed : int
@@ -126,7 +128,7 @@ def bamber19_project_icesheets(
 
     Notes
     -----
-    - NetCDF files for each ice sheet component (AIS, EAIS, WAIS, GIS) are written to `output_path`.
+    - NetCDF files for each ice sheet component (AIS, EAIS, WAIS, GIS) are written to if file path for that ice sheet is provided.
     - The function assumes the preprocessed output dictionary contains the required keys and arrays.
     """
     years = preprocess_output["targyears"]
@@ -167,94 +169,79 @@ def bamber19_project_icesheets(
     samples = np.arange(nsamps, dtype=np.int64)
     locations = np.array([-1], dtype=np.int64)  # single “location”, value -1
 
-    ds_eais = make_projection_ds(
-        ice_source="EAIS",
-        global_samps=eais_samps,
-        years=years,
-        samples=samples,
-        locations=locations,
-        pipeline_id=pipeline_id,
-        scenario=scenario,
-        baseyear=baseyear,
-    )
+    if output_EAIS_glslr_file is not None:
+        ds_eais = make_projection_ds(
+            ice_source="EAIS",
+            global_samps=eais_samps,
+            years=years,
+            samples=samples,
+            locations=locations,
+            scenario=scenario,
+            baseyear=baseyear,
+        )
+        ds_eais.to_netcdf(output_EAIS_glslr_file)
 
-    ds_wais = make_projection_ds(
-        ice_source="WAIS",
-        global_samps=wais_samps,
-        years=years,
-        samples=samples,
-        locations=locations,
-        pipeline_id=pipeline_id,
-        scenario=scenario,
-        baseyear=baseyear,
-    )
+    if output_WAIS_glslr_file is not None:
+        ds_wais = make_projection_ds(
+            ice_source="WAIS",
+            global_samps=wais_samps,
+            years=years,
+            samples=samples,
+            locations=locations,
+            scenario=scenario,
+            baseyear=baseyear,
+        )
+        ds_wais.to_netcdf(output_WAIS_glslr_file)
 
-    ds_ais = make_projection_ds(
-        ice_source="AIS",
-        global_samps=ais_samps,
-        years=years,
-        samples=samples,
-        locations=locations,
-        pipeline_id=pipeline_id,
-        scenario=scenario,
-        baseyear=baseyear,
-    )
+    if output_AIS_glslr_file is not None:
+        ds_ais = make_projection_ds(
+            ice_source="AIS",
+            global_samps=ais_samps,
+            years=years,
+            samples=samples,
+            locations=locations,
+            scenario=scenario,
+            baseyear=baseyear,
+        )
+        ds_ais.to_netcdf(output_AIS_glslr_file)
 
-    ds_gis = make_projection_ds(
-        ice_source="GIS",
-        global_samps=gis_samps,
-        years=years,
-        samples=samples,
-        locations=locations,
-        pipeline_id=pipeline_id,
-        scenario=scenario,
-        baseyear=baseyear,
-    )
+    if output_GIS_glslr_file is not None:
+        ds_gis = make_projection_ds(
+            ice_source="GIS",
+            global_samps=gis_samps,
+            years=years,
+            samples=samples,
+            locations=locations,
+            scenario=scenario,
+            baseyear=baseyear,
+        )
+        ds_gis.to_netcdf(output_GIS_glslr_file)
 
-    gis_nc_global_outpath = os.path.join(
-        output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "GIS")
-    )
-    ds_gis.to_netcdf(gis_nc_global_outpath)
-
-    wais_nc_global_outpath = os.path.join(
-        output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "WAIS")
-    )
-    ds_wais.to_netcdf(wais_nc_global_outpath)
-
-    eais_nc_global_outpath = os.path.join(
-        output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "EAIS")
-    )
-    ds_eais.to_netcdf(eais_nc_global_outpath)
-
-    ais_nc_global_outpath = os.path.join(
-        output_path, "{0}_{1}_no_clim_file_globalsl.nc".format(pipeline_id, "AIS")
-    )
-    ds_ais.to_netcdf(ais_nc_global_outpath)
     return icesheets_output
 
 
 def bamber19_project_icesheets_temperaturedriven(
     climate_data_file,
-    pipeline_id,
     replace,
     rngseed,
     preprocess_output: dict,
-    output_path: str,
+    output_EAIS_gslr_file,
+    output_WAIS_gslr_file,
+    output_GIS_gslr_file,
+    output_AIS_gslr_file
 ):
     """
     Generate and save global sea level rise projections for ice sheets (temperature-driven).
 
     This function samples from preprocessed high and low scenario ice sheet projections, determines
     which samples to draw from each scenario based on climate data, creates xarray Datasets for each
-    ice sheet component, and writes the results to NetCDF files. It is used when a climate data file
+    ice sheet component, and writes the results to NetCDF files if path provided. It is used when a climate data file
     is provided.
 
     Parameters
     ----------
     climate_data_file : str
         Path to the climate data file (HDF5/NetCDF) containing surface temperature data.
-    pipeline_id : str
-        Unique identifier for the pipeline run.
     replace : bool
         Whether to sample with replacement.
     rngseed : int
@@ -273,7 +260,7 @@ def bamber19_project_icesheets_temperaturedriven(
 
     Notes
     -----
-    - NetCDF files for each ice sheet component (AIS, EAIS, WAIS, GIS) are written to `output_path`.
+    - NetCDF files for each ice sheet component (AIS, EAIS, WAIS, GIS) are written if file path for that ice sheet is provided.
     - The function determines which samples to draw from high or low scenario using the provided climate data.
     - The function assumes the preprocessed output dictionary contains the required keys and arrays.
     """
@@ -328,45 +315,34 @@ def bamber19_project_icesheets_temperaturedriven(
     locations = np.array([-1], dtype=np.int64)  # single “location”, value -1
 
     # data: (samples, years, locations)
+    if output_EAIS_gslr_file is not None:
+         
+        ds_eais = make_projection_ds(
+            "EAIS", eais_samps, years, samples, locations, scenario, baseyear
+        )
+        ds_eais.to_netcdf(output_EAIS_gslr_file)
 
-    ds_eais = make_projection_ds(
-        "EAIS", eais_samps, years, samples, locations, pipeline_id, scenario, baseyear
-    )
-    ds_wais = make_projection_ds(
-        "WAIS", wais_samps, years, samples, locations, pipeline_id, scenario, baseyear
-    )
-    ds_ais = make_projection_ds(
-        "AIS", ais_samps, years, samples, locations, pipeline_id, scenario, baseyear
-    )
-    ds_gis = make_projection_ds(
-        "GIS", gis_samps, years, samples, locations, pipeline_id, scenario, baseyear
-    )
+    if output_WAIS_gslr_file is not None:
+         
+        ds_wais = make_projection_ds(
+            "WAIS", wais_samps, years, samples, locations, scenario, baseyear
+        )
+        ds_wais.to_netcdf(output_WAIS_gslr_file)
 
-    gis_nc_global_outpath = os.path.join(
-        output_path, "{0}_{1}_globalsl.nc".format(pipeline_id, "GIS")
-    )
-    print("Writing GIS global SLR to: ", gis_nc_global_outpath)
-    ds_gis.to_netcdf(gis_nc_global_outpath)
+    if output_AIS_gslr_file is not None:
+         
+        ds_ais = make_projection_ds(
+            "AIS", ais_samps, years, samples, locations, scenario, baseyear
+        )
+        ds_ais.to_netcdf(output_AIS_gslr_file)
 
-    wais_nc_global_outpath = os.path.join(
-        output_path, "{0}_{1}_globalsl.nc".format(pipeline_id, "WAIS")
-    )
-    print("Writing WAIS global SLR to: ", wais_nc_global_outpath)
-    ds_wais.to_netcdf(wais_nc_global_outpath)
+    if output_GIS_gslr_file is not None:
+         
+        ds_gis = make_projection_ds(
+            "GIS", gis_samps, years, samples, locations, scenario, baseyear
+        )
+        ds_gis.to_netcdf(output_GIS_gslr_file)
 
-    eais_nc_global_outpath = os.path.join(
-        output_path, "{0}_{1}_globalsl.nc".format(pipeline_id, "EAIS")
-    )
-    print("Writing EAIS global SLR to: ", eais_nc_global_outpath)
-    ds_eais.to_netcdf(eais_nc_global_outpath)
-
-    ais_nc_global_outpath = os.path.join(
-        output_path, "{0}_{1}_globalsl.nc".format(pipeline_id, "AIS")
-    )
-    print("Writing AIS global SLR to: ", ais_nc_global_outpath)
-    ds_ais.to_netcdf(ais_nc_global_outpath)
-
-    
     return icesheets_output  
 
 

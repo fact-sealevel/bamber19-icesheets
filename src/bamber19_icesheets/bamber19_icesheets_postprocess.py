@@ -18,7 +18,6 @@ to local sea-level rise
 
 Parameters:
 locationfilename = File that contains poinst for localization
-pipeline_id = Unique identifer for the pipeline running this code
 
 Output: NetCDF file containing local contributions from ice sheets
 
@@ -29,8 +28,10 @@ def bamber19_postprocess_icesheets(
     location_fpath: str,  # (need to pass full path) was: locationfilename,
     chunksize: int,
     fpdir: str,  # path to dir holding fingerprint .ncs
-    pipeline_id: str,
-    output_path: str,
+    output_EAIS_lslr_file: str,
+    output_WAIS_lslr_file: str,
+    output_GIS_lslr_file: str,
+    output_AIS_lslr_file: str
 ) -> None:
     """
     Postprocess global ice sheet projections to generate local sea level rise (SLR) at specified locations.
@@ -49,20 +50,17 @@ def bamber19_postprocess_icesheets(
         Chunk size for dask array rechunking (for memory efficiency).
     fpdir : str
         Directory containing fingerprint NetCDF files (e.g., 'fprint_gis.nc', 'fprint_wais.nc', 'fprint_eais.nc').
-    pipeline_id : str
-        Unique identifier for the pipeline run.
     output_path : str
         Directory where the output NetCDF files will be saved.
 
     Returns
     -------
     None
-        Writes NetCDF files for each ice sheet component (GIS, WAIS, EAIS, AIS) to `output_path`.
+        Writes NetCDF files for each ice sheet component (GIS, WAIS, EAIS, AIS) if path to file for that ice sheet is provided.
 
     Notes
     -----
     - The function reads location data, applies fingerprints, and generates xarray Datasets for each component.
-    - Output files are named as '{pipeline_id}_{component}_localsl.nc'.
     - The function assumes the input projection dictionary and fingerprint files are correctly formatted.
     """
     eais_samps = projection_dict["eais_samps"]
@@ -116,138 +114,126 @@ def bamber19_postprocess_icesheets(
         "scenario": scenario,
         "baseyear": baseyear,
     }
+    if output_GIS_lslr_file is not None:
+          
+        gis_out = xr.Dataset(
+            {
+                "sea_level_change": (
+                    ("samples", "years", "locations"),
+                    gissl,
+                    {"units": "mm", "missing_value": nc_missing_value},
+                ),
+                "lat": (("locations"), site_lats),
+                "lon": (("locations"), site_lons),
+            },
+            coords={
+                "years": targyears,
+                "locations": site_ids,
+                "samples": np.arange(nsamps),
+            },
+            attrs=ncvar_attributes,
+        )
+        gis_out.to_netcdf(
+            output_GIS_lslr_file,
+            encoding={
+                "sea_level_change": {
+                    "dtype": "f4",
+                    "zlib": True,
+                    "complevel": 4,
+                    "_FillValue": nc_missing_value,
+                }
+            },
+        )
+        
+    if output_WAIS_lslr_file is not None:
+        wais_out = xr.Dataset(
+            {
+                "sea_level_change": (
+                    ("samples", "years", "locations"),
+                    waissl,
+                    {"units": "mm", "missing_value": nc_missing_value},
+                ),
+                "lat": (("locations"), site_lats),
+                "lon": (("locations"), site_lons),
+            },
+            coords={
+                "years": targyears,
+                "locations": site_ids,
+                "samples": np.arange(nsamps),
+            },
+            attrs=ncvar_attributes,
+        )
+        wais_out.to_netcdf(
+            output_WAIS_lslr_file,
+            encoding={
+                "sea_level_change": {
+                    "dtype": "f4",
+                    "zlib": True,
+                    "complevel": 4,
+                    "_FillValue": nc_missing_value,
+                }
+            },
+        )
 
-    gis_out = xr.Dataset(
-        {
-            "sea_level_change": (
-                ("samples", "years", "locations"),
-                gissl,
-                {"units": "mm", "missing_value": nc_missing_value},
-            ),
-            "lat": (("locations"), site_lats),
-            "lon": (("locations"), site_lons),
-        },
-        coords={
-            "years": targyears,
-            "locations": site_ids,
-            "samples": np.arange(nsamps),
-        },
-        attrs=ncvar_attributes,
-    )
+    if output_EAIS_lslr_file is not None:
+        eais_out = xr.Dataset(
+            {
+                "sea_level_change": (
+                    ("samples", "years", "locations"),
+                    eaissl,
+                    {"units": "mm", "missing_value": nc_missing_value},
+                ),
+                "lat": (("locations"), site_lats),
+                "lon": (("locations"), site_lons),
+            },
+            coords={
+                "years": targyears,
+                "locations": site_ids,
+                "samples": np.arange(nsamps),
+            },
+            attrs=ncvar_attributes,
+        )
+        eais_out.to_netcdf(
+            output_EAIS_lslr_file,
+            encoding={
+                "sea_level_change": {
+                    "dtype": "f4",
+                    "zlib": True,
+                    "complevel": 4,
+                    "_FillValue": nc_missing_value,
+                }
+            },
+        )
 
-    wais_out = xr.Dataset(
-        {
-            "sea_level_change": (
-                ("samples", "years", "locations"),
-                waissl,
-                {"units": "mm", "missing_value": nc_missing_value},
-            ),
-            "lat": (("locations"), site_lats),
-            "lon": (("locations"), site_lons),
-        },
-        coords={
-            "years": targyears,
-            "locations": site_ids,
-            "samples": np.arange(nsamps),
-        },
-        attrs=ncvar_attributes,
-    )
-
-    eais_out = xr.Dataset(
-        {
-            "sea_level_change": (
-                ("samples", "years", "locations"),
-                eaissl,
-                {"units": "mm", "missing_value": nc_missing_value},
-            ),
-            "lat": (("locations"), site_lats),
-            "lon": (("locations"), site_lons),
-        },
-        coords={
-            "years": targyears,
-            "locations": site_ids,
-            "samples": np.arange(nsamps),
-        },
-        attrs=ncvar_attributes,
-    )
-
-    ais_out = xr.Dataset(
-        {
-            "sea_level_change": (
-                ("samples", "years", "locations"),
-                aissl,
-                {"units": "mm", "missing_value": nc_missing_value},
-            ),
-            "lat": (("locations"), site_lats),
-            "lon": (("locations"), site_lons),
-        },
-        coords={
-            "years": targyears,
-            "locations": site_ids,
-            "samples": np.arange(nsamps),
-        },
-        attrs=ncvar_attributes,
-    )
-
-    # Write the netcdf output files
-    gis_nc_outpath = os.path.join(
-        output_path, "{0}_{1}_localsl.nc".format(pipeline_id, "GIS")
-    )
-    gis_out.to_netcdf(
-        gis_nc_outpath,
-        encoding={
-            "sea_level_change": {
-                "dtype": "f4",
-                "zlib": True,
-                "complevel": 4,
-                "_FillValue": nc_missing_value,
-            }
-        },
-    )
-
-    wais_nc_path = os.path.join(
-        output_path, "{0}_{1}_localsl.nc".format(pipeline_id, "WAIS")
-    )
-    wais_out.to_netcdf(
-        wais_nc_path,
-        encoding={
-            "sea_level_change": {
-                "dtype": "f4",
-                "zlib": True,
-                "complevel": 4,
-                "_FillValue": nc_missing_value,
-            }
-        },
-    )
-    eais_nc_path = os.path.join(
-        output_path, "{0}_{1}_localsl.nc".format(pipeline_id, "EAIS")
-    )
-    eais_out.to_netcdf(
-        eais_nc_path,
-        encoding={
-            "sea_level_change": {
-                "dtype": "f4",
-                "zlib": True,
-                "complevel": 4,
-                "_FillValue": nc_missing_value,
-            }
-        },
-    )
-    ais_nc_path = os.path.join(
-        output_path, "{0}_{1}_localsl.nc".format(pipeline_id, "AIS")
-    )
-    ais_out.to_netcdf(
-        ais_nc_path,
-        encoding={
-            "sea_level_change": {
-                "dtype": "f4",
-                "zlib": True,
-                "complevel": 4,
-                "_FillValue": nc_missing_value,
-            }
-        },
-    )
-
+    if output_AIS_lslr_file is not None:
+        ais_out = xr.Dataset(
+            {
+                "sea_level_change": (
+                    ("samples", "years", "locations"),
+                    aissl,
+                    {"units": "mm", "missing_value": nc_missing_value},
+                ),
+                "lat": (("locations"), site_lats),
+                "lon": (("locations"), site_lons),
+            },
+            coords={
+                "years": targyears,
+                "locations": site_ids,
+                "samples": np.arange(nsamps),
+            },
+            attrs=ncvar_attributes,
+        )
+        ais_out.to_netcdf(
+            output_AIS_lslr_file,
+            encoding={
+                "sea_level_change": {
+                    "dtype": "f4",
+                    "zlib": True,
+                    "complevel": 4,
+                    "_FillValue": nc_missing_value,
+                }
+            },
+        )
 
 if __name__ == '__main__':
 
