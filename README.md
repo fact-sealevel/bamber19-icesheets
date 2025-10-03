@@ -135,7 +135,7 @@ This is the output of the Climate step (a FAIR temperature model run) in a FACTS
     >[!NOTE] These options are specified in the `scenario_map` input argument and used in `bamber19_preprocess_icesheets()` in the `bamber19_icesheets_preprocess.py` script.
 
 - `--nsamps`
-If a FAIR output file is passed, the number of samples in the FAIR output file that is passed must match `--nsamps` specified for the Bamber19-icesheets run. Additionally, this module expects a `climate.nc` file for that argument, from which it uses the temperature variable. If a `gsat.nc` is passed, a TODO ADD error will be raised. The default value is updated from 10 in original to 500.
+If a FAIR output file is passed, the number of samples in the FAIR output file that is passed must match `--nsamps` specified for the Bamber19-icesheets run. Additionally, this module expects a `climate.nc` file for that argument, from which it uses the temperature variable. If a `gsat.nc` is passed, an error will be raised. The default value is updated from 10 in original to 500.
 
 - `--baseyear`
 The `--baseyear` passed to `bamber19-icesheets` must match the base year used to in the FAIR temperature modeling step. 
