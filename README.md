@@ -124,6 +124,13 @@ docker run --rm bamber19-icesheets --help
 ## Results
 If this module runs successfully, output projections will appear in `./data/output`. For each ice sheet (EAIS, WAIS, AIS, GIS), two netCDF files may be written: one of projections of ice sheet contribution to global sea-level change and one of sampled projections of ice sheet contribution to local sea-level change. 
 
+## Build the container locally
+You can build the container with Docker by cloning the repository locally and then running the following command from the repository root:
+
+```shell
+docker build -t bamber19-icesheets .
+
+```
 ## Notes
 (these probably belong elsewhere but have them here for now)
 - Where necessary, new arguments are created to replace hard-coded paths and other variables in the original. 
