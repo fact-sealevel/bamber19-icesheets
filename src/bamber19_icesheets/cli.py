@@ -45,7 +45,7 @@ import click
     envvar="BAMBER19_ICESHEETS_SCENARIO",
     help="Emissions scenario of interest [default=ssp585]",
     default="ssp585",
-    # NOTE, this is rcp85 in orig. module, updating to ssp585 per discussion in stcaf/tlm-sterodynamics issue #7
+    # NOTE, this is rcp85 in orig. module, updating to ssp585 per discussion in facts-org/tlm-sterodynamics issue #7
 )
 @click.option(
     "--climate-data-file",
