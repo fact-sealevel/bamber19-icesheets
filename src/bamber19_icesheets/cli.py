@@ -56,9 +56,8 @@ import click
 @click.option(
     "--slr-proj-mat-file",
     envvar="BAMBER19_ICESHEETS_SLR_PROJ_MAT_FILE",
-    default="bamber19_icesheets_preprocess_data/SLRProjections190726core_SEJ_full.mat",
-    show_default=True,
     help="Path to the SLR projections matlab file",
+    required=True,
 )
 @click.option(
     "--nsamps",
@@ -82,7 +81,7 @@ import click
     "--location-file",
     envvar="BAMBER19_ICESHEETS_LOCATION_FILE",
     help="Path to location file for postprocessing",
-    default="location.lst",
+    required=True,
 )
 @click.option(
     "--chunksize",
@@ -94,8 +93,8 @@ import click
 @click.option(
     "--fingerprint-dir",
     envvar="BAMBER19_ICESHEETS_FINGERPRINT_DIR",
-    help="Directory to save postprocessed files to [default='']",
-    default="grd_fingerprints_data/FPRINT",
+    help="Directory to save postprocessed files",
+    required=True,
 )
 @click.option(
     "--output-EAIS-lslr-file",
