@@ -50,7 +50,6 @@ import click
     "--climate-data-file",
     default=None,
     envvar="BAMBER19_ICESHEETS_CLIMATE_DATA_FILE",
-    show_default=True,
     help="NetCDF4/HDF5 file containing surface temperature data",
 )
 @click.option(
