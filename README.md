@@ -148,31 +148,6 @@ You can build the container with Docker by cloning the repository locally and th
 docker build -t bamber19-icesheets .
 
 ```
-## Notes
-(these probably belong elsewhere but have them here for now)
-- Where necessary, new arguments are created to replace hard-coded paths and other variables in the original. 
-
-- Unless noted, default values for input args that exist in the original module are taken from the original module.
-
-- `--climate-data-file`
-This is the output of the Climate step (a FAIR temperature model run) in a FACTS v.1 experiment. It is not required to run this module. However, not passing a climate data file encodes other assumtions in the bamber19 run which can cause errors depending on other input arguments. For example, if no climate data is passed, this implies that the scenario is either 'rcp85' or 'rcp26' or temperature targets 'tlim2.0win0.25' or 'tlim5.0win0.25'. The default scenario for bamber19-icesheets is 'ssp585';if no climate data file is passed, a scenario argument must be passed to specify one of the above-mentioned options. 
-    >[!NOTE] These options are specified in the `scenario_map` input argument and used in `bamber19_preprocess_icesheets()` in the `bamber19_icesheets_preprocess.py` script.
-
-- `--nsamps`
-If a FAIR output file is passed, the number of samples in the FAIR output file that is passed must match `--nsamps` specified for the Bamber19-icesheets run. Additionally, this module expects a `climate.nc` file for that argument, from which it uses the temperature variable. If a `gsat.nc` is passed, an error will be raised. The default value is updated from 10 in original to 500.
-
-- `--baseyear`
-The `--baseyear` passed to `bamber19-icesheets` must match the base year used to in the FAIR temperature modeling step. 
-
-- `--pyear-start`
-This value must be greater than or equal to 2020 and must be a multiple of 10 (this is to match the temporal resolution of the data in the input file, `SLRProjections190726Score_SEJ_full.mat`).
-
-- `--pyear-step`
-This value must be a multiple of 10. This is to match the temporal resolution of the data in the input file, `SLRProjections190726Score_SEJ_full.mat`.
-
-- `--pyear-end`
-This can be any integer. It *should* be any integer > `pyear-start` (or some minimum time window?); currently, you can pass any value for `pyear-end` and if it less than or equal to `pyear-start`, the program will write the expected netcdfs with `years` dimensions of length zero.
-
 
 ## Support
 
