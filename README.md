@@ -7,7 +7,7 @@ An application producing sea level projections by sampling from the Structured E
 
 ## Example
 
-This application can run on emissions-projected climate data. For example, you can use the output `climate.nc` file from the [fair model container](https://github.com/stcaf-org/fair-temperature). Additional input data is located in this repository.
+This application can run on emissions-projected climate data. For example, you can use the output `climate.nc` file from the [fair model container](https://github.com/facts-org/fair-temperature). Additional input data is located in this repository.
 
 ### Setup
 
@@ -126,8 +126,6 @@ If this module runs successfully, output projections will appear in `./data/outp
 
 ## Notes
 (these probably belong elsewhere but have them here for now)
-- All input arguments in the [original module](https://github.com/stcaf-org/bamber19-icesheets/tree/main/modules/bamber19/icesheets) are defined in `cli.py` and passed to `main()`. 
-
 - Where necessary, new arguments are created to replace hard-coded paths and other variables in the original. 
 
 - Unless noted, default values for input args that exist in the original module are taken from the original module.
@@ -154,6 +152,6 @@ This can be any integer. It *should* be any integer > `pyear-start` (or some min
 
 ## Support
 
-Source code is available online at https://github.com/stcaf-org/bamber19-icesheets. This software is open source, available under the MIT license.
+Source code is available online at https://github.com/facts-org/bamber19-icesheets. This software is open source, available under the MIT license.
 
-Please file issues in the issue tracker at https://github.com/stcaf-org/bamber19-icesheets/issues.
+Please file issues in the issue tracker at https://github.com/facts-org/bamber19-icesheets/issues.
