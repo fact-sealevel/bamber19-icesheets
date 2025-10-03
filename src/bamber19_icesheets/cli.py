@@ -49,7 +49,7 @@ import click
 )
 @click.option(
     "--climate-data-file",
-    default="",
+    default=None,
     envvar="BAMBER19_ICESHEETS_CLIMATE_DATA_FILE",
     show_default=True,
     help="NetCDF4/HDF5 file containing surface temperature data",
@@ -182,6 +182,16 @@ def main(
     """
     click.echo("Hello from bamber-19 ice sheets!")
 
+    # Check for incompatible options & update scenario if necessary
+    if climate_data_file is None:
+        if scenario == "ssp585":
+            click.echo(
+                click.wrap_text(
+                    "WARNING: No climate data file was passed and the specified scenario is ssp585 (default). These options are incompatible: if no climate data file is passed, scenario must be either rcp85 or rcp26. I am updating it to rcp85. Re-run specifying scenario as rcp26 if you would like different behavior.",
+                    width=100,
+                )
+            )
+            scenario = "rcp85"
     # Run preprocess step
     preprocess_output = bamber19_preprocess_icesheets(
         pyear_start=pyear_start,
@@ -192,7 +202,6 @@ def main(
         slr_proj_mat_fpath=slr_proj_mat_file,
         climate_data_file=climate_data_file,
     )
-
     # Run project step
     if climate_data_file is None:
         project_output = bamber19_project_icesheets(

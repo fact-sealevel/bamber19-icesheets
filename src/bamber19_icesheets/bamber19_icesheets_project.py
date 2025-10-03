@@ -94,10 +94,10 @@ def bamber19_project_icesheets(
     replace,
     rngseed,
     preprocess_output,
-    output_AIS_glslr_file,
-    output_GIS_glslr_file,
-    output_WAIS_glslr_file,
-    output_EAIS_glslr_file,
+    output_AIS_gslr_file,
+    output_GIS_gslr_file,
+    output_WAIS_gslr_file,
+    output_EAIS_gslr_file,
 ):
     """
     Generate and save global sea level rise projections for ice sheets (if no climate data file is passed).
@@ -168,7 +168,7 @@ def bamber19_project_icesheets(
     samples = np.arange(nsamps, dtype=np.int64)
     locations = np.array([-1], dtype=np.int64)  # single “location”, value -1
 
-    if output_EAIS_glslr_file is not None:
+    if output_EAIS_gslr_file is not None:
         ds_eais = make_projection_ds(
             ice_source="EAIS",
             global_samps=eais_samps,
@@ -178,9 +178,9 @@ def bamber19_project_icesheets(
             scenario=scenario,
             baseyear=baseyear,
         )
-        ds_eais.to_netcdf(output_EAIS_glslr_file)
+        ds_eais.to_netcdf(output_EAIS_gslr_file)
 
-    if output_WAIS_glslr_file is not None:
+    if output_WAIS_gslr_file is not None:
         ds_wais = make_projection_ds(
             ice_source="WAIS",
             global_samps=wais_samps,
@@ -190,9 +190,9 @@ def bamber19_project_icesheets(
             scenario=scenario,
             baseyear=baseyear,
         )
-        ds_wais.to_netcdf(output_WAIS_glslr_file)
+        ds_wais.to_netcdf(output_WAIS_gslr_file)
 
-    if output_AIS_glslr_file is not None:
+    if output_AIS_gslr_file is not None:
         ds_ais = make_projection_ds(
             ice_source="AIS",
             global_samps=ais_samps,
@@ -202,9 +202,9 @@ def bamber19_project_icesheets(
             scenario=scenario,
             baseyear=baseyear,
         )
-        ds_ais.to_netcdf(output_AIS_glslr_file)
+        ds_ais.to_netcdf(output_AIS_gslr_file)
 
-    if output_GIS_glslr_file is not None:
+    if output_GIS_gslr_file is not None:
         ds_gis = make_projection_ds(
             ice_source="GIS",
             global_samps=gis_samps,
@@ -214,7 +214,7 @@ def bamber19_project_icesheets(
             scenario=scenario,
             baseyear=baseyear,
         )
-        ds_gis.to_netcdf(output_GIS_glslr_file)
+        ds_gis.to_netcdf(output_GIS_gslr_file)
 
     return icesheets_output
 
