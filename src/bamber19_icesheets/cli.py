@@ -43,7 +43,7 @@ import click
 @click.option(
     "--scenario",
     envvar="BAMBER19_ICESHEETS_SCENARIO",
-    help="Emissions scenario of interest [default=ssp585]",
+    help="Emissions scenario of interest [default=rcp85]",
     default="rcp85",
 )
 @click.option(

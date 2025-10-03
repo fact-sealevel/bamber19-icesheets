@@ -42,6 +42,7 @@ docker run --rm -v ./data/input:/mnt/bamber_data_in:ro \
 -v ./data/output:/mnt/bamber_data_out bamber19-icesheets \
 --slr-proj-mat-file /mnt/bamber_data_in/SLRProjections190726core_SEJ_full.mat \
 --climate-data-file /mnt/bamber_data_in/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
+--scenario 'ssp585' \
 --location-file /mnt/bamber_data_in/location.lst \
 --fingerprint-dir /mnt/bamber_data_in/grd_fingerprints_data/FPRINT \
 --output-EAIS-lslr-file /mnt/bamber_data_out/output_eais_lslr.nc \
@@ -73,10 +74,9 @@ Options:
   --pyear-step INTEGER RANGE    Projection year step [default=10]  [x>=1]
   --baseyear INTEGER            Year to which projections are referenced
                                 [default = 2000]
-  --scenario TEXT               Emissions scenario of interest
-                                [default=ssp585]
+  --scenario TEXT               Emissions scenario of interest [default=rcp85]
   --climate-data-file TEXT      NetCDF4/HDF5 file containing surface
-                                temperature data  [default: ""]
+                                temperature data
   --slr-proj-mat-file TEXT      Path to the SLR projections matlab file
                                 [default: bamber19_icesheets_preprocess_data/S
                                 LRProjections190726core_SEJ_full.mat]
