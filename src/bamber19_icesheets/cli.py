@@ -45,7 +45,6 @@ import click
     envvar="BAMBER19_ICESHEETS_SCENARIO",
     help="Emissions scenario of interest [default=ssp585]",
     default="rcp85",
-    # NOTE, this is rcp85 in orig. module, updating to ssp585 per discussion in facts-org/tlm-sterodynamics issue #7
 )
 @click.option(
     "--climate-data-file",
@@ -182,16 +181,6 @@ def main(
     """
     click.echo("Hello from bamber-19 ice sheets!")
 
-    # Check for incompatible options & update scenario if necessary
-    if climate_data_file is None:
-        if scenario == "ssp585":
-            click.echo(
-                click.wrap_text(
-                    "WARNING: No climate data file was passed and the specified scenario is ssp585 (default). These options are incompatible: if no climate data file is passed, scenario must be either rcp85 or rcp26. I am updating it to rcp85. Re-run specifying scenario as rcp26 if you would like different behavior.",
-                    width=100,
-                )
-            )
-            scenario = "rcp85"
     # Run preprocess step
     preprocess_output = bamber19_preprocess_icesheets(
         pyear_start=pyear_start,
