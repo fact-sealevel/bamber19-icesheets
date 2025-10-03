@@ -1,11 +1,9 @@
 import argparse
-import os
 import sys
-import pickle as p
 import numpy as np
 import scipy.io
 
-''' bamber19_preprocess_icesheets.py
+""" bamber19_preprocess_icesheets.py
 
 This runs the preprocessing stage for the Bamber et al. 2019 ice sheet component of the IPCC AR6
 workflow.
@@ -13,7 +11,8 @@ workflow.
 Parameters:
 pipeline_id = Unique identifier for the pipeline running this code
 
-'''
+"""
+
 
 def bamber19_preprocess_icesheets(
     pyear_start,
@@ -91,11 +90,15 @@ def bamber19_preprocess_icesheets(
             "scenario": scenario,
         }
         return out_data_all
-        
+
     # If no climate data file provided
     else:
-        scenario_map = {"rcp85": 'corefileH', "rcp26": 'corefileL',  \
-						"tlim2.0win0.25": 'corefileL', "tlim5.0win0.25": 'corefileH'}
+        scenario_map = {
+            "rcp85": "corefileH",
+            "rcp26": "corefileL",
+            "tlim2.0win0.25": "corefileL",
+            "tlim5.0win0.25": "corefileH",
+        }
         this_corefile = scenario_map[scenario]
         wais_samps, eais_samps, gis_samps = ExtractSamples(
             mat=mat, this_corefile=this_corefile, targyears=targyears, baseyear=baseyear
@@ -111,7 +114,6 @@ def bamber19_preprocess_icesheets(
             "baseyear": baseyear,
         }
         return out_data_scen
-        
 
 
 def ExtractSamples(mat, this_corefile, targyears, baseyear):
@@ -173,6 +175,7 @@ def ExtractSamples(mat, this_corefile, targyears, baseyear):
     wais_samps = wais_samps[:, mat_years_idx]
     gis_samps = gis_samps[:, mat_years_idx]
     return wais_samps, eais_samps, gis_samps
+
 
 def FindRefVals(timeseries, years, baseyear):
     # Append a zero to the beginning of the timeseries at year 2000

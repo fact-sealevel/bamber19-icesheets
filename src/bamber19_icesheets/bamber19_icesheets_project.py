@@ -3,7 +3,6 @@ import numpy as np
 import time
 import h5py
 import xarray as xr
-import os
 
 """ bamber19_project_icesheets.py
 
@@ -92,9 +91,9 @@ def make_projection_ds(
 
 def bamber19_project_icesheets(
     nsamps,
-    replace, 
-    rngseed, 
-    preprocess_output, 
+    replace,
+    rngseed,
+    preprocess_output,
     output_AIS_glslr_file,
     output_GIS_glslr_file,
     output_WAIS_glslr_file,
@@ -150,7 +149,7 @@ def bamber19_project_icesheets(
     gis_samps = gis_samples[sample_inds, :]
 
     ## In original bamber19_project_icesheets(), WriteOutput() is called and 'scenario' is passed.
-    ## However, in WriteOutput(), 'scenario' isn't used, its hardcoded  as 'temperature-driven'. 
+    ## However, in WriteOutput(), 'scenario' isn't used, its hardcoded  as 'temperature-driven'.
     # not sure if intended or not
     icesheets_output = {
         "eais_samps": eais_samps,
@@ -158,7 +157,7 @@ def bamber19_project_icesheets(
         "ais_samps": ais_samps,
         "gis_samps": gis_samps,
         "years": years,
-        "scenario": 'temperature-driven', # leaving as is (not using scenario obj for now)
+        "scenario": "temperature-driven",  # leaving as is (not using scenario obj for now)
         "baseyear": baseyear,
     }
 
@@ -228,7 +227,7 @@ def bamber19_project_icesheets_temperaturedriven(
     output_EAIS_gslr_file,
     output_WAIS_gslr_file,
     output_GIS_gslr_file,
-    output_AIS_gslr_file
+    output_AIS_gslr_file,
 ):
     """
     Generate and save global sea level rise projections for ice sheets (temperature-driven).
@@ -316,34 +315,30 @@ def bamber19_project_icesheets_temperaturedriven(
 
     # data: (samples, years, locations)
     if output_EAIS_gslr_file is not None:
-         
         ds_eais = make_projection_ds(
             "EAIS", eais_samps, years, samples, locations, scenario, baseyear
         )
         ds_eais.to_netcdf(output_EAIS_gslr_file)
 
     if output_WAIS_gslr_file is not None:
-         
         ds_wais = make_projection_ds(
             "WAIS", wais_samps, years, samples, locations, scenario, baseyear
         )
         ds_wais.to_netcdf(output_WAIS_gslr_file)
 
     if output_AIS_gslr_file is not None:
-         
         ds_ais = make_projection_ds(
             "AIS", ais_samps, years, samples, locations, scenario, baseyear
         )
         ds_ais.to_netcdf(output_AIS_gslr_file)
 
     if output_GIS_gslr_file is not None:
-         
         ds_gis = make_projection_ds(
             "GIS", gis_samps, years, samples, locations, scenario, baseyear
         )
         ds_gis.to_netcdf(output_GIS_gslr_file)
 
-    return icesheets_output  
+    return icesheets_output
 
 
 def GetSATData(
@@ -382,7 +377,7 @@ def GetSATData(
     # Needed to make one change here - orig. tried to get years from df_ssp obj.
     # like this: sat_years = df_ssp['year'][()], didn't work. related to which fair file it expected?
     sat_years = ssp_folder["years"][()]
-    
+
     # Which indices align with the reference and trim years
     refyear_start_idx = np.flatnonzero(sat_years == refyear_start)[0]
     refyear_end_idx = np.flatnonzero(sat_years == refyear_end)[0]  # + 1
@@ -433,27 +428,55 @@ def pickScenario(climate_data_file, scenario, rng):
     useHigh = selector < weights
     return useHigh
 
-if __name__ == '__main__':
 
-	# Initialize the command-line argument parser
-	parser = argparse.ArgumentParser(description="Run the IPCC AR6 Bamber et al. 2019 ice sheet projection stage.",\
-	epilog="Note: This is meant to be run as part of the ipccar6 module set within the Framework for the Assessment of Changes To Sea-level (FACTS)")
+if __name__ == "__main__":
+    # Initialize the command-line argument parser
+    parser = argparse.ArgumentParser(
+        description="Run the IPCC AR6 Bamber et al. 2019 ice sheet projection stage.",
+        epilog="Note: This is meant to be run as part of the ipccar6 module set within the Framework for the Assessment of Changes To Sea-level (FACTS)",
+    )
 
-	# Define the command line arguments to be expected
-	parser.add_argument('--nsamps', help="Number of samples to draw (default = 10)", default=10, type=int)
-	parser.add_argument('--replace', help="Allow sampling with replacement (default = 1)", choices=(0,1), type=int, default=1)
-	parser.add_argument('--seed', help="Seed for the random number generator (default = 1234)", default=1234, type=int)
-	parser.add_argument('--pipeline_id', help="Unique identifier for this instance of the module")
-	parser.add_argument('--climate_data_file', help="NetCDF4/HDF5 file containing surface temperature data", type=str, default="")
+    # Define the command line arguments to be expected
+    parser.add_argument(
+        "--nsamps",
+        help="Number of samples to draw (default = 10)",
+        default=10,
+        type=int,
+    )
+    parser.add_argument(
+        "--replace",
+        help="Allow sampling with replacement (default = 1)",
+        choices=(0, 1),
+        type=int,
+        default=1,
+    )
+    parser.add_argument(
+        "--seed",
+        help="Seed for the random number generator (default = 1234)",
+        default=1234,
+        type=int,
+    )
+    parser.add_argument(
+        "--pipeline_id", help="Unique identifier for this instance of the module"
+    )
+    parser.add_argument(
+        "--climate_data_file",
+        help="NetCDF4/HDF5 file containing surface temperature data",
+        type=str,
+        default="",
+    )
 
+    # Parse the arguments
+    args = parser.parse_args()
 
-	# Parse the arguments
-	args = parser.parse_args()
+    if len(args.climate_data_file) == 0:
+        # Run the preprocessing stage with the user defined RCP scenario
+        bamber19_project_icesheets(
+            args.nsamps, args.pipeline_id, args.replace, args.seed
+        )
+    else:
+        bamber19_project_icesheets_temperaturedriven(
+            args.climate_data_file, args.pipeline_id, args.replace, args.seed
+        )
 
-	if len(args.climate_data_file) == 0:
-		# Run the preprocessing stage with the user defined RCP scenario
-		bamber19_project_icesheets(args.nsamps, args.pipeline_id, args.replace, args.seed)
-	else:
-		bamber19_project_icesheets_temperaturedriven(args.climate_data_file,args.pipeline_id, args.replace, args.seed)
-
-	exit()
+    exit()

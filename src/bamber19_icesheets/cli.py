@@ -61,7 +61,6 @@ import click
     show_default=True,
     help="Path to the SLR projections matlab file",
 )
-
 @click.option(
     "--nsamps",
     envvar="BAMBER19_ICESHEETS_NSAMPS",
@@ -102,60 +101,59 @@ import click
 @click.option(
     "--output-EAIS-lslr-file",
     envvar="BAMBER19_ICESHEETS_OUTPUT_EAIS_LSLR_FILE",
-    help = "Path to write EAIS contribution to local SLR output file. If not provided, file will not be written.",
-    type=str, 
+    help="Path to write EAIS contribution to local SLR output file. If not provided, file will not be written.",
+    type=str,
     required=False,
 )
 @click.option(
     "--output-WAIS-lslr-file",
     envvar="BAMBER19_ICESHEETS_OUTPUT_WAIS_LSLR_FILE",
-    help = "Path to write WAIS contribution to local SLR output file. If not provided, file will not be written.",
-    type=str, 
+    help="Path to write WAIS contribution to local SLR output file. If not provided, file will not be written.",
+    type=str,
     required=False,
 )
 @click.option(
     "--output-GIS-lslr-file",
     envvar="BAMBER19_ICESHEETS_OUTPUT_GIS_LSLR_FILE",
-    help = "Path to write GIS contribution to local SLR output file. If not provided, file will not be written.",
-    type=str, 
+    help="Path to write GIS contribution to local SLR output file. If not provided, file will not be written.",
+    type=str,
     required=False,
 )
 @click.option(
     "--output-AIS-lslr-file",
     envvar="BAMBER19_ICESHEETS_OUTPUT_AIS_LSLR_FILE",
-    help = "Path to write AIS contribution to local SLR output file. If not provided, file will not be written.",
+    help="Path to write AIS contribution to local SLR output file. If not provided, file will not be written.",
     type=str,
     required=False,
 )
 @click.option(
     "--output-EAIS-gslr-file",
     envvar="BAMBER19_ICESHEETS_OUTPUT_EAIS_GSLR_FILE",
-    help = "Path to write EAIS contribution to global SLR output file. If not provided, file will not be written.",
+    help="Path to write EAIS contribution to global SLR output file. If not provided, file will not be written.",
     type=str,
     required=False,
 )
 @click.option(
     "--output-WAIS-gslr-file",
     envvar="BAMBER19_ICESHEETS_OUTPUT_WAIS_GSLR_FILE",
-    help = "Path to write WAIS contribution to global SLR output file. If not provided, file will not be written.",
+    help="Path to write WAIS contribution to global SLR output file. If not provided, file will not be written.",
     type=str,
     required=False,
 )
 @click.option(
     "--output-GIS-gslr-file",
     envvar="BAMBER19_ICESHEETS_OUTPUT_GIS_GSLR_FILE",
-    help = "Path to write GIS contribution to global SLR output file. If not provided, file will not be written.",
+    help="Path to write GIS contribution to global SLR output file. If not provided, file will not be written.",
     type=str,
     required=False,
 )
 @click.option(
     "--output-AIS-gslr-file",
     envvar="BAMBER19_ICESHEETS_OUTPUT_AIS_GSLR_FILE",
-    help = "Path to write AIS contribution to global SLR output file. If not provided, file will not be written.",
+    help="Path to write AIS contribution to global SLR output file. If not provided, file will not be written.",
     type=str,
     required=False,
 )
-
 def main(
     pyear_start,
     pyear_end,
@@ -177,7 +175,7 @@ def main(
     output_eais_gslr_file,
     output_wais_gslr_file,
     output_gis_gslr_file,
-    output_ais_gslr_file
+    output_ais_gslr_file,
 ) -> None:
     """
     Application producing sea level projections from ice sheet contributions following the methods of Bamber et al., 2019. Samples of estimated global contribution to sea level are produced for each ice sheet. These are then adjusted by applying spatial fingerprints to produce localized SLR projections for each ice sheet.
@@ -216,7 +214,7 @@ def main(
             output_AIS_gslr_file=output_ais_gslr_file,
             output_GIS_gslr_file=output_gis_gslr_file,
             output_WAIS_gslr_file=output_wais_gslr_file,
-            output_EAIS_gslr_file=output_eais_gslr_file
+            output_EAIS_gslr_file=output_eais_gslr_file,
         )
     # Run postprocss step
     bamber19_postprocess_icesheets(

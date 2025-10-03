@@ -8,7 +8,7 @@ import dask.array as da
 from bamber19_icesheets.read_locationfile import ReadLocationFile
 from bamber19_icesheets.AssignFP import AssignFP
 
-''' bamber19_postprocess_icesheets.py
+""" bamber19_postprocess_icesheets.py
 
 This script runs the ice sheet post-processing task for the IPCC AR6 Bamber icesheet workflow. This task
 uses the global projections from the 'bamber19_project_icesheets' script and applies
@@ -21,7 +21,8 @@ locationfilename = File that contains poinst for localization
 
 Output: NetCDF file containing local contributions from ice sheets
 
-'''
+"""
+
 
 def bamber19_postprocess_icesheets(
     projection_dict: dict,
@@ -31,7 +32,7 @@ def bamber19_postprocess_icesheets(
     output_EAIS_lslr_file: str,
     output_WAIS_lslr_file: str,
     output_GIS_lslr_file: str,
-    output_AIS_lslr_file: str
+    output_AIS_lslr_file: str,
 ) -> None:
     """
     Postprocess global ice sheet projections to generate local sea level rise (SLR) at specified locations.
@@ -76,7 +77,7 @@ def bamber19_postprocess_icesheets(
     # Get some dimension data from the loaded data structures
     nsamps = eais_samps.shape[0]
 
-    #commented out from original, these aren't needed?
+    # commented out from original, these aren't needed?
     # nyears = len(targyears)
     # nsites = len(site_ids)
 
@@ -115,7 +116,6 @@ def bamber19_postprocess_icesheets(
         "baseyear": baseyear,
     }
     if output_GIS_lslr_file is not None:
-          
         gis_out = xr.Dataset(
             {
                 "sea_level_change": (
@@ -144,7 +144,7 @@ def bamber19_postprocess_icesheets(
                 }
             },
         )
-        
+
     if output_WAIS_lslr_file is not None:
         wais_out = xr.Dataset(
             {
@@ -235,22 +235,35 @@ def bamber19_postprocess_icesheets(
             },
         )
 
-if __name__ == '__main__':
 
-	# Initialize the command-line argument parser
-	parser = argparse.ArgumentParser(description="Run the post-processing stage for the IPCC AR6 Bamber Icesheet SLR projection workflow",\
-	epilog="Note: This is meant to be run as part of the Framework for the Assessment of Changes To Sea-level (FACTS)")
+if __name__ == "__main__":
+    # Initialize the command-line argument parser
+    parser = argparse.ArgumentParser(
+        description="Run the post-processing stage for the IPCC AR6 Bamber Icesheet SLR projection workflow",
+        epilog="Note: This is meant to be run as part of the Framework for the Assessment of Changes To Sea-level (FACTS)",
+    )
 
-	# Define the command line arguments to be expected
-	parser.add_argument('--locationfile', help="File that contains name, id, lat, and lon of points for localization", default="location.lst")
-	parser.add_argument('--chunksize', help="Number of locations to process at a time [default=50]", type=int, default=50)
-	parser.add_argument('--pipeline_id', help="Unique identifier for this instance of the module")
+    # Define the command line arguments to be expected
+    parser.add_argument(
+        "--locationfile",
+        help="File that contains name, id, lat, and lon of points for localization",
+        default="location.lst",
+    )
+    parser.add_argument(
+        "--chunksize",
+        help="Number of locations to process at a time [default=50]",
+        type=int,
+        default=50,
+    )
+    parser.add_argument(
+        "--pipeline_id", help="Unique identifier for this instance of the module"
+    )
 
-	# Parse the arguments
-	args = parser.parse_args()
+    # Parse the arguments
+    args = parser.parse_args()
 
-	# Run the postprocessing for the parameters specified from the command line argument
-	bamber19_postprocess_icesheets(args.locationfile, args.chunksize, args.pipeline_id)
+    # Run the postprocessing for the parameters specified from the command line argument
+    bamber19_postprocess_icesheets(args.locationfile, args.chunksize, args.pipeline_id)
 
-	# Done
-	exit()
+    # Done
+    exit()
