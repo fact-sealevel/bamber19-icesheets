@@ -59,7 +59,6 @@ def make_projection_ds(
 
     ds = xr.Dataset(
         data_vars={
-            # data variable
             "sea_level_change": (
                 ("samples", "years", "locations"),
                 data,
@@ -313,7 +312,6 @@ def bamber19_project_icesheets_temperaturedriven(
     samples = np.arange(nsamps, dtype=np.int64)
     locations = np.array([-1], dtype=np.int64)  # single “location”, value -1
 
-    # data: (samples, years, locations)
     if output_EAIS_gslr_file is not None:
         ds_eais = make_projection_ds(
             "EAIS", eais_samps, years, samples, locations, scenario, baseyear

@@ -233,8 +233,7 @@ if __name__ == "__main__":
 
     # Parse the arguments
     args = parser.parse_args()
-    # these don't work anymore because fn modified above to add new input args
-    # to replace the hardcoded paths and values.
+
     if len(args.climate_data_file) == 0:
         bamber19_preprocess_icesheets(
             args.pyear_start,
