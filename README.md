@@ -14,7 +14,7 @@ This application can run on emissions-projected climate data. For example, you c
 Clone the repository and create directories to hold input and output data. 
 
 ```shell
-git clone -b fix_history_package git@github.com:e-marshall/bamber19-icesheets.git
+git clone git@github.com:fact-sealevel/bamber19-icesheets.git
 ```
 
 Download input data using the following Zenodo records:
