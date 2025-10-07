@@ -4,10 +4,11 @@ on:
   push:
     branches:
       - "main"
+      - "add_workflows"
+
   pull_request:
     branches:
       - "main"
-      - "add_workflows"
 
 jobs:
   test:
