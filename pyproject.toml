@@ -1,7 +1,7 @@
 [project]
 name = "bamber19-icesheets"
 version = "0.1.0"
-description = "Add your description here"
+description = "Containerized application that generates projections of the contributions of ice sheets to sea level following the approach developed by Bamber et al. (2019)."
 readme = "README.md"
 authors = [
     { name = "Emma Marshall", email = "emarshall@rhg.com" }
