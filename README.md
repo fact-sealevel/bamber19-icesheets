@@ -22,7 +22,7 @@ Download input data using the following Zenodo records:
 ```shell
 # Input data we will pass to the container
 mkdir -p ./data/input
-curl -sL https://zenodo.org/records/7478192/files/bamber19_icesheets_preprocess_data.tgz | tar -zx -C ./data/input
+curl -sL https://zenodo.org/record/7478192/files/bamber19_icesheets_preprocess_data.tgz | tar -zx -C ./data/input
 
 echo "New_York	12	40.70	-74.01" > ./data/input/location.lst
 
