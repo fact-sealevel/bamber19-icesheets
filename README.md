@@ -32,27 +32,26 @@ echo "New_York	12	40.70	-74.01" > ./data/input/location.lst
 mkdir -p ./data/output
 ```
 
-From the root directory, create a docker image that we will use to run the application:
-```shell
-docker build -t bamber19-icesheets .
-```
+Next, run the container associated with this package. For example: 
 
-Create a container based on the image (`docker run --rm`), mount volumes for both the input and output data sub-directories and set the working directory to the location of the app in the container (`-w`). Then, call the application, passing the desired input arguments and making sure that the paths for each input argument are relative to the mounted volumes. Pass a full path for each output file that you would like the program to write. Output objects will only be written to file if a path is passed as an input argument. In the example below, all possible outputs (local and global projections for each ice sheet) are written:
+
 
 ```shell
-docker run --rm -v ./data/input:/mnt/bamber_data_in:ro \
--v ./data/output:/mnt/bamber_data_out bamber19-icesheets \
---slr-proj-mat-file /mnt/bamber_data_in/SLRProjections190726core_SEJ_full.mat \
---location-file /mnt/bamber_data_in/location.lst \
---fingerprint-dir /mnt/bamber_data_in/FPRINT \
---output-EAIS-lslr-file /mnt/bamber_data_out/output_eais_lslr.nc \
---output-WAIS-lslr-file /mnt/bamber_data_out/output_wais_lslr.nc \
---output-GIS-lslr-file /mnt/bamber_data_out/output_gis_lslr.nc \
---output-AIS-gslr-file /mnt/bamber_data_out/output_ais_gslr.nc \
---output-EAIS-gslr-file /mnt/bamber_data_out/output_eais_gslr.nc \
---output-WAIS-gslr-file /mnt/bamber_data_out/output_wais_gslr.nc \
---output-GIS-gslr-file /mnt/bamber_data_out/output_gis_gslr.nc \
---output-AIS-gslr-file /mnt/bamber_data_out/output_ais_gslr.nc 
+docker run --rm \
+  -v ./data/input:/mnt/bamber_data_in:ro \
+  -v ./data/output:/mnt/bamber_data_out \
+  ghcr.io/fact-sealevel/bamber19-icesheets:edge \
+  --slr-proj-mat-file /mnt/bamber_data_in/SLRProjections190726core_SEJ_full.mat \
+  --location-file /mnt/bamber_data_in/location.lst \
+  --fingerprint-dir /mnt/bamber_data_in/FPRINT \
+  --output-EAIS-lslr-file /mnt/bamber_data_out/output_eais_lslr.nc \
+  --output-WAIS-lslr-file /mnt/bamber_data_out/output_wais_lslr.nc \
+  --output-GIS-lslr-file /mnt/bamber_data_out/output_gis_lslr.nc \
+  --output-AIS-gslr-file /mnt/bamber_data_out/output_ais_gslr.nc \
+  --output-EAIS-gslr-file /mnt/bamber_data_out/output_eais_gslr.nc \
+  --output-WAIS-gslr-file /mnt/bamber_data_out/output_wais_gslr.nc \
+  --output-GIS-gslr-file /mnt/bamber_data_out/output_gis_gslr.nc \
+  --output-AIS-gslr-file /mnt/bamber_data_out/output_ais_gslr.nc 
 ```
 
 ## Features
@@ -122,7 +121,7 @@ docker run --rm bamber19-icesheets --help
 ```   
 
 ## Results
-If this module runs successfully, output projections will appear in `./data/output`. For each ice sheet (EAIS, WAIS, AIS, GIS), two netCDF files may be written: one of projections of ice sheet contribution to global sea-level change and one of sampled projections of ice sheet contribution to local sea-level change. 
+If this module runs successfully, output projections will appear in `./data/output`. For each ice sheet (EAIS, WAIS, AIS, GIS), two NetCDF files may be written: one of projections of ice sheet contribution to global sea-level change and one of sampled projections of ice sheet contribution to local sea-level change. 
 
 ## Build the container locally
 You can build the container with Docker by cloning the repository locally and then running the following command from the repository root:
