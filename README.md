@@ -22,7 +22,9 @@ Download input data using the following Zenodo records:
 ```shell
 # Input data we will pass to the container
 mkdir -p ./data/input
-curl -sL https://zenodo.org/records/7478192/files/bamber19_icesheets_preprocess_data.tgz | tar -zx -C ./data/input
+curl -sL https://zenodo.org/record/7478192/files/bamber19_icesheets_preprocess_data.tgz | tar -zx -C ./data/input
+# Fingerprint input data for postprocessing step
+curl -sL https://zenodo.org/record/7478192/files/grd_fingerprints_data.tgz | tar -zx -C ./data/input
 
 echo "New_York	12	40.70	-74.01" > ./data/input/location.lst
 
@@ -41,27 +43,8 @@ Create a container based on the image (`docker run --rm`), mount volumes for bot
 docker run --rm -v ./data/input:/mnt/bamber_data_in:ro \
 -v ./data/output:/mnt/bamber_data_out bamber19-icesheets \
 --slr-proj-mat-file /mnt/bamber_data_in/SLRProjections190726core_SEJ_full.mat \
---climate-data-file /mnt/bamber_data_in/fair_out/bamber19.ssp585.temperature.fair.temperature_climate.nc \
---scenario 'ssp585' \
 --location-file /mnt/bamber_data_in/location.lst \
---fingerprint-dir /mnt/bamber_data_in/grd_fingerprints_data/FPRINT \
---output-EAIS-lslr-file /mnt/bamber_data_out/output_eais_lslr.nc \
---output-WAIS-lslr-file /mnt/bamber_data_out/output_wais_lslr.nc \
---output-GIS-lslr-file /mnt/bamber_data_out/output_gis_lslr.nc \
---output-AIS-gslr-file /mnt/bamber_data_out/output_ais_gslr.nc \
---output-EAIS-gslr-file /mnt/bamber_data_out/output_eais_gslr.nc \
---output-WAIS-gslr-file /mnt/bamber_data_out/output_wais_gslr.nc \
---output-GIS-gslr-file /mnt/bamber_data_out/output_gis_gslr.nc \
---output-AIS-gslr-file /mnt/bamber_data_out/output_ais_gslr.nc 
-```
-
-Example not passing a climate data file: 
-```shell
-docker run --rm -v ./data/input:/mnt/bamber_data_in:ro \
--v ./data/output:/mnt/bamber_data_out bamber19-icesheets \
---slr-proj-mat-file /mnt/bamber_data_in/SLRProjections190726core_SEJ_full.mat \
---location-file /mnt/bamber_data_in/location.lst \
---fingerprint-dir /mnt/bamber_data_in/grd_fingerprints_data/FPRINT \
+--fingerprint-dir /mnt/bamber_data_in/FPRINT \
 --output-EAIS-lslr-file /mnt/bamber_data_out/output_eais_lslr.nc \
 --output-WAIS-lslr-file /mnt/bamber_data_out/output_wais_lslr.nc \
 --output-GIS-lslr-file /mnt/bamber_data_out/output_gis_lslr.nc \
