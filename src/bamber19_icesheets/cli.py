@@ -14,37 +14,53 @@ import click
 
 @click.command()
 @click.option(
+    "--pipeline-id",
+    envvar="BAMBER19_ICESHEETS_PIPELINE_ID",
+    help = "Unique identifier for this instance of the module.",
+    required=False,
+    type=str,
+)
+@click.option(
     "--pyear-start",
     envvar="BAMBER19_ICESHEETS_PYEAR_START",
-    help="Projection year start [default=2020]",
+    help="Projection year start",
     default=2020,
     type=click.IntRange(min=2020),
+    show_default=True,
 )
 @click.option(
     "--pyear-end",
     envvar="BAMBER19_ICESHEETS_PYEAR_END",
-    help="Projection year end [default=2100]",
+    help="Projection year end",
     default=2100,
     type=click.IntRange(max=2300),
+    show_default=True,
 )
 @click.option(
     "--pyear-step",
     envvar="BAMBER19_ICESHEETS_PYEAR_STEP",
-    help="Projection year step [default=10]",
+    help="Projection year step",
     default=10,
+    show_default=True,
     type=click.IntRange(min=1),
 )
 @click.option(
     "--baseyear",
     envvar="BAMBER19_ICESHEETS_BASEYEAR",
-    help="Year to which projections are referenced [default = 2000]",
+    help="Year to which projections are referenced",
     default=2000,
+    show_default=True,
+    type=int
 )
 @click.option(
     "--scenario",
     envvar="BAMBER19_ICESHEETS_SCENARIO",
-    help="Emissions scenario of interest [default=rcp85]",
+    help="Emissions scenario of interest",
     default="rcp85",
+    type=click.Choice(["rcp26", "rcp45", "rcp85", "ssp119",
+                       "ssp126","ssp245","ssp370","ssp585"], 
+                       case_sensitive=False),
+    show_default=True,
 )
 @click.option(
     "--climate-data-file",
@@ -61,38 +77,46 @@ import click
 @click.option(
     "--nsamps",
     envvar="BAMBER19_ICESHEETS_NSAMPS",
-    help="Number of samples to draw [default=500]",
+    help="Number of samples to draw",
     default=500,
+    show_default=True,
+    type=int,
 )
 @click.option(
     "--replace",
     envvar="BAMBER19_ICESHEETS_REPLACE",
-    help="Whether to sample with replacement [default=1]",
+    help="Whether to sample with replacement",
     default=1,
+    type=click.IntRange(min=0, max=1),
+    show_default=True,
 )
 @click.option(
     "--rngseed",
     envvar="BAMBER19_ICESHEETS_RNGSEED",
-    help="Seed for the random number generator [default=1234]",
+    help="Seed for the random number generator",
     default=1234,
+    type=int,
+    show_default=True,
 )
 @click.option(
     "--location-file",
     envvar="BAMBER19_ICESHEETS_LOCATION_FILE",
-    help="Path to location file for postprocessing",
+    help="Path to file that contains name, id, lat, and lon of points for localization",
     required=True,
+    type=str
 )
 @click.option(
     "--chunksize",
-    type=int,
     envvar="BAMBER19_ICESHEETS_CHUNKSIZE",
-    help="Chunk size for postprocessing [default=50]",
+    help="Number of locations to process at a time",
     default=50,
+    show_default=True,
+    type=int,
 )
 @click.option(
     "--fingerprint-dir",
     envvar="BAMBER19_ICESHEETS_FINGERPRINT_DIR",
-    help="Directory to save postprocessed files",
+    help="Path to directory containing fingerprint files",
     required=True,
 )
 @click.option(
