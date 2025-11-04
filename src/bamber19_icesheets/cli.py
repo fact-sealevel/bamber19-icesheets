@@ -177,6 +177,7 @@ import click
     required=False,
 )
 def main(
+    pipeline_id,
     pyear_start,
     pyear_end,
     pyear_step,

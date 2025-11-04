@@ -41,6 +41,7 @@ docker run --rm \
   -v ./data/input:/mnt/bamber_data_in:ro \
   -v ./data/output:/mnt/bamber_data_out \
   ghcr.io/fact-sealevel/bamber19-icesheets:edge \
+  --pipeline-id MY_PIPELINE_ID \
   --slr-proj-mat-file /mnt/bamber_data_in/SLRProjections190726core_SEJ_full.mat \
   --location-file /mnt/bamber_data_in/location.lst \
   --fingerprint-dir /mnt/bamber_data_in/FPRINT \
