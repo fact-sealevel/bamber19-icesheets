@@ -16,7 +16,7 @@ import click
 @click.option(
     "--pipeline-id",
     envvar="BAMBER19_ICESHEETS_PIPELINE_ID",
-    help = "Unique identifier for this instance of the module.",
+    help="Unique identifier for this instance of the module.",
     required=False,
     type=str,
 )
@@ -50,16 +50,17 @@ import click
     help="Year to which projections are referenced",
     default=2000,
     show_default=True,
-    type=int
+    type=int,
 )
 @click.option(
     "--scenario",
     envvar="BAMBER19_ICESHEETS_SCENARIO",
     help="Emissions scenario of interest",
     default="rcp85",
-    type=click.Choice(["rcp26", "rcp45", "rcp85", "ssp119",
-                       "ssp126","ssp245","ssp370","ssp585"], 
-                       case_sensitive=False),
+    type=click.Choice(
+        ["rcp26", "rcp45", "rcp85", "ssp119", "ssp126", "ssp245", "ssp370", "ssp585"],
+        case_sensitive=False,
+    ),
     show_default=True,
 )
 @click.option(
@@ -103,7 +104,7 @@ import click
     envvar="BAMBER19_ICESHEETS_LOCATION_FILE",
     help="Path to file that contains name, id, lat, and lon of points for localization",
     required=True,
-    type=str
+    type=str,
 )
 @click.option(
     "--chunksize",
