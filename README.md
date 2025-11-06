@@ -7,7 +7,7 @@ An application producing sea level projections by sampling from the Structured E
 
 ## Example
 
-This application can run on emissions-projected climate data. For example, you can use the output `climate.nc` file from the [fair model container](https://github.com/facts-org/fair-temperature). Additional input data is located in this repository.
+This application can run on emissions-projected climate data. For example, you can use the output `climate.nc` file from the [fair model container](https://github.com/fact-sealevel/fair-temperature). Additional input data is located in this repository.
 
 ### Setup
 
@@ -41,6 +41,7 @@ docker run --rm \
   -v ./data/input:/mnt/bamber_data_in:ro \
   -v ./data/output:/mnt/bamber_data_out \
   ghcr.io/fact-sealevel/bamber19-icesheets:edge \
+  --pipeline-id MY_PIPELINE_ID \
   --slr-proj-mat-file /mnt/bamber_data_in/SLRProjections190726core_SEJ_full.mat \
   --location-file /mnt/bamber_data_in/location.lst \
   --fingerprint-dir /mnt/bamber_data_in/FPRINT \
@@ -67,51 +68,59 @@ Usage: bamber19-icesheets [OPTIONS]
   projections for each ice sheet.
 
 Options:
-  --pyear-start INTEGER RANGE   Projection year start [default=2020]
-                                [x>=2020]
-  --pyear-end INTEGER RANGE     Projection year end [default=2100]  [x<=2300]
-  --pyear-step INTEGER RANGE    Projection year step [default=10]  [x>=1]
-  --baseyear INTEGER            Year to which projections are referenced
-                                [default = 2000]
-  --scenario TEXT               Emissions scenario of interest [default=rcp85]
-  --climate-data-file TEXT      NetCDF4/HDF5 file containing surface
-                                temperature data
-  --slr-proj-mat-file TEXT      Path to the SLR projections matlab file
-                                [default: bamber19_icesheets_preprocess_data/S
-                                LRProjections190726core_SEJ_full.mat]
-  --nsamps INTEGER              Number of samples to draw [default=500]
-  --replace INTEGER             Whether to sample with replacement [default=1]
-  --rngseed INTEGER             Seed for the random number generator
-                                [default=1234]
-  --location-file TEXT          Path to location file for postprocessing
-  --chunksize INTEGER           Chunk size for postprocessing [default=50]
-  --fingerprint-dir TEXT        Directory to save postprocessed files to
-                                [default='']
-  --output-EAIS-lslr-file TEXT  Path to write EAIS contribution to local SLR
-                                output file. If not provided, file will not be
-                                written.
-  --output-WAIS-lslr-file TEXT  Path to write WAIS contribution to local SLR
-                                output file. If not provided, file will not be
-                                written.
-  --output-GIS-lslr-file TEXT   Path to write GIS contribution to local SLR
-                                output file. If not provided, file will not be
-                                written.
-  --output-AIS-lslr-file TEXT   Path to write AIS contribution to local SLR
-                                output file. If not provided, file will not be
-                                written.
-  --output-EAIS-gslr-file TEXT  Path to write EAIS contribution to global SLR
-                                output file. If not provided, file will not be
-                                written.
-  --output-WAIS-gslr-file TEXT  Path to write WAIS contribution to global SLR
-                                output file. If not provided, file will not be
-                                written.
-  --output-GIS-gslr-file TEXT   Path to write GIS contribution to global SLR
-                                output file. If not provided, file will not be
-                                written.
-  --output-AIS-gslr-file TEXT   Path to write AIS contribution to global SLR
-                                output file. If not provided, file will not be
-                                written.
-  --help                        Show this message and exit.
+  --pipeline-id TEXT              Unique identifier for this instance of the
+                                  module.
+  --pyear-start INTEGER RANGE     Projection year start  [default: 2020;
+                                  x>=2020]
+  --pyear-end INTEGER RANGE       Projection year end  [default: 2100;
+                                  x<=2300]
+  --pyear-step INTEGER RANGE      Projection year step  [default: 10; x>=1]
+  --baseyear INTEGER              Year to which projections are referenced
+                                  [default: 2000]
+  --scenario [rcp26|rcp45|rcp85|ssp119|ssp126|ssp245|ssp370|ssp585]
+                                  Emissions scenario of interest  [default:
+                                  rcp85]
+  --climate-data-file TEXT        NetCDF4/HDF5 file containing surface
+                                  temperature data
+  --slr-proj-mat-file TEXT        Path to the SLR projections matlab file
+                                  [required]
+  --nsamps INTEGER                Number of samples to draw  [default: 500]
+  --replace INTEGER RANGE         Whether to sample with replacement
+                                  [default: 1; 0<=x<=1]
+  --rngseed INTEGER               Seed for the random number generator
+                                  [default: 1234]
+  --location-file TEXT            Path to file that contains name, id, lat,
+                                  and lon of points for localization
+                                  [required]
+  --chunksize INTEGER             Number of locations to process at a time
+                                  [default: 50]
+  --fingerprint-dir TEXT          Path to directory containing fingerprint
+                                  files  [required]
+  --output-EAIS-lslr-file TEXT    Path to write EAIS contribution to local SLR
+                                  output file. If not provided, file will not
+                                  be written.
+  --output-WAIS-lslr-file TEXT    Path to write WAIS contribution to local SLR
+                                  output file. If not provided, file will not
+                                  be written.
+  --output-GIS-lslr-file TEXT     Path to write GIS contribution to local SLR
+                                  output file. If not provided, file will not
+                                  be written.
+  --output-AIS-lslr-file TEXT     Path to write AIS contribution to local SLR
+                                  output file. If not provided, file will not
+                                  be written.
+  --output-EAIS-gslr-file TEXT    Path to write EAIS contribution to global
+                                  SLR output file. If not provided, file will
+                                  not be written.
+  --output-WAIS-gslr-file TEXT    Path to write WAIS contribution to global
+                                  SLR output file. If not provided, file will
+                                  not be written.
+  --output-GIS-gslr-file TEXT     Path to write GIS contribution to global SLR
+                                  output file. If not provided, file will not
+                                  be written.
+  --output-AIS-gslr-file TEXT     Path to write AIS contribution to global SLR
+                                  output file. If not provided, file will not
+                                  be written.
+  --help                          Show this message and exit.
 ```
 
 See this help documentation by passing the `--help` flag when running the application, for example: 
