@@ -7,7 +7,7 @@ An application producing sea level projections by sampling from the Structured E
 
 ## Example
 
-This application can run on emissions-projected climate data. For example, you can use the output `climate.nc` file from the [fair model container](https://github.com/fact-sealevel/fair-temperature). Additional input data is located in this repository.
+This application can run on emissions-projected climate data. For example, you can use the output `climate.nc` file from the [FAIR model container](https://github.com/fact-sealevel/fair-temperature). Additional input data is located in this repository.
 
 ### Setup
 
@@ -40,7 +40,7 @@ Next, run the container associated with this package. For example:
 docker run --rm \
   -v ./data/input:/mnt/bamber_data_in:ro \
   -v ./data/output:/mnt/bamber_data_out \
-  ghcr.io/fact-sealevel/bamber19-icesheets:edge \
+  ghcr.io/fact-sealevel/bamber19-icesheets:0.1.0 \
   --pipeline-id MY_PIPELINE_ID \
   --slr-proj-mat-file /mnt/bamber_data_in/SLRProjections190726core_SEJ_full.mat \
   --location-file /mnt/bamber_data_in/location.lst \
