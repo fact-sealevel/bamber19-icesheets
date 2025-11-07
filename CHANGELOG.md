@@ -7,8 +7,11 @@ The format is based on[Keep a Changelog](https://keepachangelog.com/en/1.1.0/), 
 
 
 
-## 0.1.0 - 2025-11-06
+## [0.1.0] - 2025-11-06
 
 ### Added
 - Add a container for this application to the org.'s container registry which is used in the README example (https://github.com/fact-sealevel/bamber19-icesheets/pull/7)
 - Added scripts from original bamber19-icesheets FACTS module and refactored them to work as a CLICK CLI app. (https://github.com/fact-sealevel/bamber19-icesheets/pull/2)
+
+[Unreleased]: https://github.com/fact-sealevel/bamber19-icesheets/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/fact-sealevel/bamber19-icesheets/tags/v0.1.0
