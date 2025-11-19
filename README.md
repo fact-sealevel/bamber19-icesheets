@@ -48,7 +48,7 @@ docker run --rm \
   --output-EAIS-lslr-file /mnt/bamber_data_out/output_eais_lslr.nc \
   --output-WAIS-lslr-file /mnt/bamber_data_out/output_wais_lslr.nc \
   --output-GIS-lslr-file /mnt/bamber_data_out/output_gis_lslr.nc \
-  --output-AIS-gslr-file /mnt/bamber_data_out/output_ais_gslr.nc \
+  --output-AIS-lslr-file /mnt/bamber_data_out/output_ais_lslr.nc \
   --output-EAIS-gslr-file /mnt/bamber_data_out/output_eais_gslr.nc \
   --output-WAIS-gslr-file /mnt/bamber_data_out/output_wais_gslr.nc \
   --output-GIS-gslr-file /mnt/bamber_data_out/output_gis_gslr.nc \
