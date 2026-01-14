@@ -141,7 +141,9 @@ def bamber19_postprocess_icesheets(
                     "zlib": True,
                     "complevel": 4,
                     "_FillValue": nc_missing_value,
-                }
+                },
+                "lat": {"dtype": "f8", "_FillValue": None},
+                "lon": {"dtype": "f8", "_FillValue": None},
             },
         )
 
@@ -171,7 +173,9 @@ def bamber19_postprocess_icesheets(
                     "zlib": True,
                     "complevel": 4,
                     "_FillValue": nc_missing_value,
-                }
+                },
+                "lat": {"dtype": "f8", "_FillValue": None},
+                "lon": {"dtype": "f8", "_FillValue": None},
             },
         )
 
@@ -201,7 +205,9 @@ def bamber19_postprocess_icesheets(
                     "zlib": True,
                     "complevel": 4,
                     "_FillValue": nc_missing_value,
-                }
+                },
+                "lat": {"dtype": "f8", "_FillValue": None},
+                "lon": {"dtype": "f8", "_FillValue": None},
             },
         )
 
@@ -231,7 +237,9 @@ def bamber19_postprocess_icesheets(
                     "zlib": True,
                     "complevel": 4,
                     "_FillValue": nc_missing_value,
-                }
+                },
+                "lat": {"dtype": "f8", "_FillValue": None},
+                "lon": {"dtype": "f8", "_FillValue": None},
             },
         )
 
