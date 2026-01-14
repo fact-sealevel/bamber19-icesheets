@@ -10,6 +10,10 @@ from bamber19_icesheets.bamber19_icesheets_postprocess import (
 )
 
 import click
+import logging
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 
 @click.command()
@@ -176,6 +180,11 @@ import click
     type=str,
     required=False,
 )
+@click.option(
+    "--debug/--no-debug",
+    default=False,
+    envvar="BAMBER19_ICESHEETS_DEBUG",
+)
 def main(
     pipeline_id,
     pyear_start,
@@ -199,13 +208,19 @@ def main(
     output_wais_gslr_file,
     output_gis_gslr_file,
     output_ais_gslr_file,
+    debug,
 ) -> None:
     """
     Application producing sea level projections from ice sheet contributions following the methods of Bamber et al., 2019. Samples of estimated global contribution to sea level are produced for each ice sheet. These are then adjusted by applying spatial fingerprints to produce localized SLR projections for each ice sheet.
     """
     click.echo("Hello from bamber-19 ice sheets!")
+    if debug:
+        logging.root.setLevel(logging.DEBUG)
+    else:
+        logging.root.setLevel(logging.INFO)
 
     # Run preprocess step
+    logger.info("Starting preprocessing step...")
     preprocess_output = bamber19_preprocess_icesheets(
         pyear_start=pyear_start,
         pyear_end=pyear_end,
@@ -215,7 +230,10 @@ def main(
         slr_proj_mat_fpath=slr_proj_mat_file,
         climate_data_file=climate_data_file,
     )
+    logger.info("Finished preprocessing step")
+
     # Run project step
+    logger.info("Starting projection step...")
     if climate_data_file is None:
         project_output = bamber19_project_icesheets(
             nsamps=nsamps,
@@ -238,7 +256,10 @@ def main(
             output_WAIS_gslr_file=output_wais_gslr_file,
             output_EAIS_gslr_file=output_eais_gslr_file,
         )
-    # Run postprocss step
+    logger.info("Finished projection step")
+
+    # Run postprocess step
+    logger.info("Starting postprocessing step...")
     bamber19_postprocess_icesheets(
         projection_dict=project_output,
         location_fpath=location_file,
@@ -249,7 +270,4 @@ def main(
         output_GIS_lslr_file=output_gis_lslr_file,
         output_AIS_lslr_file=output_ais_lslr_file,
     )
-
-
-if __name__ == "__main__":
-    main()
+    logger.info("Finished postprocessing step")
